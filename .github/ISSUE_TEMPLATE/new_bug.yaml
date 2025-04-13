@@ -1,0 +1,34 @@
+name: "\U0001f41e New Bug"
+description: Raise up bug report
+
+title: 'your-bug'
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        _Thank you for reporting this bug_
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: '<h2>Repro Steps</h2>'
+      description: Please provide steps to reproduce the **BUG**
+      placeholder: Click on xyc > scroll to abc section > click on zzz > see error
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: '<h2>Acceptance Criteria</h2>'
+      description: Try to provide an EXAMPLE or CONCEPT of the desirable and expected results
+      placeholder: Performing x, y, & z will... should yield...
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: '<h2>References</h2>'
+      description: Please provide any **SCREENSHOTS**, **CODE SNIPPETS** or **LINKS** to the codebase or documentation which will help implement a solution.
