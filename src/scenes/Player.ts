@@ -52,6 +52,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     yam.setRotation(angle);
     this.scene.physics.moveTo(yam, pointer.worldX, pointer.worldY, 500);
+    this.scene.time.delayedCall(2000, () => {
+      console.log('Yam destroyed');
+      yam.destroy();
+    });
   }
   
 }
