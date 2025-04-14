@@ -1,7 +1,7 @@
-import { Scene } from 'phaser';
-import Player from '../scenes/Player';
+import Player from './Player';
+import { BaseScene } from './BaseScene';
 
-export class Game extends Scene
+export class Game extends BaseScene
 {
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;

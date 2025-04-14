@@ -1,11 +1,14 @@
+import { BaseScene } from "./BaseScene"
+
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys
   private wasd?: { [key: string]: Phaser.Input.Keyboard.Key }
   private speed: number
-
+  private gameScene: BaseScene
   
   constructor(scene: Phaser.Scene) {
       super(scene, scene.scale.width / 2, scene.scale.height / 2, 'player')
+      this.gameScene = scene as BaseScene
 
       this.setScale(4) // the player sprite is too small by default
       this.scene.add.existing(this)
@@ -45,6 +48,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   throwYam() {
+    if (this.gameScene.dataStore.amountOfYams <= 0) {
+      console.log('No more yams to throw!');
+      return;
+    }
+    this.gameScene.dataStore.amountOfYams--;
     console.log('Yam thrown! 🍠');
     const yam = this.scene.physics.add.sprite(this.x, this.y, 'yam');
     const pointer = this.scene.input.activePointer;
