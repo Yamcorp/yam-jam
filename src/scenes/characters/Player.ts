@@ -1,4 +1,4 @@
-import { BaseScene } from "./BaseScene"
+import { BaseScene } from "../BaseScene"
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys
@@ -7,7 +7,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   private gameScene: BaseScene
   
   constructor(scene: Phaser.Scene) {
-      super(scene, scene.scale.width / 2, scene.scale.height / 2, 'player')
+      super(scene, scene.scale.width / 2, scene.scale.height / 2, 'Player')
       this.gameScene = scene as BaseScene
 
       this.setScale(4) // the player sprite is too small by default

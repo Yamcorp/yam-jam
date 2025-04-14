@@ -3,7 +3,7 @@ import { Game as MainGame } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
-import DataStorePlugin from './scenes/DataStorePlugin';
+import DataStorePlugin from './plugins/DataStorePlugin';
 
 import { Game, Types } from "phaser";
 

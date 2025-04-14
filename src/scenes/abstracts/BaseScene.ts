@@ -1,4 +1,4 @@
-import DataStorePlugin from "./DataStorePlugin";
+import DataStorePlugin from "../../plugins/DataStorePlugin";
 
 export abstract class BaseScene extends Phaser.Scene {
   dataStore!: DataStorePlugin

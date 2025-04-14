@@ -1,5 +1,5 @@
-import Player from './Player';
-import { BaseScene } from './BaseScene';
+import Player from './characters/Player';
+import { BaseScene } from './abstracts/BaseScene';
 
 export class Game extends BaseScene
 {
@@ -21,7 +21,7 @@ export class Game extends BaseScene
         this.background = this.add.image(512, 384, 'background');
         this.background.setAlpha(0.5);
 
-        this.msg_text = this.add.text(512, 384, 'Make something fun!\nand share it with us:\nsupport@phaser.io', {
+        this.msg_text = this.add.text(250, 30, `Yams Remaining: ${this.dataStore.amountOfYams}`, {
             fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
@@ -32,6 +32,7 @@ export class Game extends BaseScene
 
     update(_time: number, _delta: number): void {
       this.player.update()
+      this.msg_text.setText(`Yams Remaining: ${this.dataStore.amountOfYams}`);
     }
   
 }
