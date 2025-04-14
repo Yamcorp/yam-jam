@@ -3,6 +3,7 @@ import { Game as MainGame } from './scenes/Game';
 import { GameOver } from './scenes/GameOver';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
+import DataStorePlugin from './plugins/DataStorePlugin';
 
 import { Game, Types } from "phaser";
 
@@ -18,6 +19,18 @@ const config: Types.Core.GameConfig = {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
+    physics: {
+      default: 'arcade',
+      arcade: {
+        gravity: { x: 0, y: 0 },
+        debug: true, // shows the collision shape and velocity
+      }
+    },
+    plugins: {
+        global: [
+          { key: 'DataStorePlugin', plugin: DataStorePlugin, start: true }
+        ]
+    }, 
     scene: [
         Boot,
         Preloader,
