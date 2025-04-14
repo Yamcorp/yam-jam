@@ -1,16 +1,18 @@
 import { Scene } from 'phaser';
+import Player from '../scenes/Player';
 
 export class Game extends Scene
 {
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
     msg_text : Phaser.GameObjects.Text;
+    private player: Player
 
     constructor ()
     {
         super('Game');
     }
-
+    
     create ()
     {
         this.camera = this.cameras.main;
@@ -25,11 +27,11 @@ export class Game extends Scene
             align: 'center'
         });
         this.msg_text.setOrigin(0.5);
-
-        this.input.once('pointerdown', () => {
-
-            this.scene.start('GameOver');
-
-        });
+        this.player = new Player(this)
     }
+
+    update(_time: number, _delta: number): void {
+      this.player.update()
+    }
+  
 }
