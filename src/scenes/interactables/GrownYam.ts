@@ -1,7 +1,7 @@
 import { NPC } from '../abstracts/NPC';
 import { BaseScene } from '../abstracts/BaseScene'
 
-export class Yam extends NPC {
+export class GrownYam extends NPC {
   constructor(scene: BaseScene, x: number, y: number) {
     super(scene, 'Yam', 'Yam', x, y, true);
     const text = scene.add.text(x, y, '🍠', {
@@ -12,8 +12,7 @@ export class Yam extends NPC {
     text.setOrigin(0.5);
   }
 
-  interact(): void {
+  public interact (): void {
     console.log('It is yamming it up');
-    
   }
 }

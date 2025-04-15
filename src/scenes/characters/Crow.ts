@@ -13,17 +13,16 @@ export class Crow extends NPC {
     this.crowSpeed = speed;
   }
   
-  interact() {
+  public interact () {
     console.log('The crow got hit with a yam!');
-    this.gameScene.crows = this.gameScene.crows.filter((crow) => crow !== this);
     this.destroy();
   }
 
-  setTarget(target: Phaser.GameObjects.Sprite) {
+  public setTarget (target: Phaser.GameObjects.Sprite) {
     this.target = target;
   }
 
-  update() {
+  public update () {
     let speed: number;
     switch (this.crowSpeed) {
       case 'fast': speed = Phaser.Math.Between(150, 225); break;
