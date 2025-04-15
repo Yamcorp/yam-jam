@@ -4,6 +4,7 @@ import { GameOver } from './scenes/GameOver';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
 import DataStorePlugin from './plugins/DataStorePlugin';
+import ClockPlugin from './plugins/ClockPlugin';
 
 import { Game, Types } from "phaser";
 
@@ -28,9 +29,10 @@ const config: Types.Core.GameConfig = {
     },
     plugins: {
         global: [
-          { key: 'DataStorePlugin', plugin: DataStorePlugin, start: true }
+          { key: 'DataStorePlugin', plugin: DataStorePlugin, start: true },
+          { key: 'ClockPlugin', plugin: ClockPlugin, start: true }
         ]
-    }, 
+    },
     scene: [
         Boot,
         Preloader,
