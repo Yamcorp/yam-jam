@@ -1,4 +1,4 @@
-import { BaseScene } from "../BaseScene"
+import { BaseScene } from '../abstracts/BaseScene'
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys
