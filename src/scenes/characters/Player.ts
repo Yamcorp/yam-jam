@@ -6,18 +6,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   private speed: number
   private gameScene: BaseScene
   
-  constructor(scene: Phaser.Scene) {
-      super(scene, scene.scale.width / 2, scene.scale.height / 2, 'Player')
+  constructor(scene: Phaser.Scene, x: number, y: number) {
+      super(scene, x, y, 'Player')
       this.gameScene = scene as BaseScene
 
       this.setScale(4) // the player sprite is too small by default
-      this.scene.add.existing(this)
-      this.scene.physics.add.existing(this)
-
+      this.gameScene.add.existing(this)
+      this.gameScene.physics.add.existing(this)
       this.body?.setSize(16, 16) // the collision shape is now too big
 
-      this.cursors = scene.input.keyboard?.createCursorKeys()
-      this.wasd = scene.input.keyboard?.addKeys({
+      this.cursors = this.gameScene.input.keyboard?.createCursorKeys()
+      this.wasd = this.gameScene.input.keyboard?.addKeys({
           up: Phaser.Input.Keyboard.KeyCodes.W,
           down: Phaser.Input.Keyboard.KeyCodes.S,
           left: Phaser.Input.Keyboard.KeyCodes.A,
@@ -26,7 +25,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
       this.speed = 250
 
-      this.scene.input.on('pointerdown', this.throwYam, this);
+      this.gameScene.input.on('pointerdown', this.throwYam, this);
   }
 
   update() {
@@ -54,13 +53,13 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
     this.gameScene.dataStore.amountOfYams--;
     console.log('Yam thrown! 🍠');
-    const yam = this.scene.physics.add.sprite(this.x, this.y, 'yam');
-    const pointer = this.scene.input.activePointer;
+    const yam = this.gameScene.physics.add.sprite(this.x, this.y, 'yam');
+    const pointer = this.gameScene.input.activePointer;
     const angle = Phaser.Math.Angle.Between(this.x, this.y, pointer.worldX, pointer.worldY);
 
     yam.setRotation(angle);
-    this.scene.physics.moveTo(yam, pointer.worldX, pointer.worldY, 500);
-    this.scene.time.delayedCall(2000, () => {
+    this.gameScene.physics.moveTo(yam, pointer.worldX, pointer.worldY, 500);
+    this.gameScene.time.delayedCall(2000, () => {
       console.log('Yam destroyed');
       yam.destroy();
     });

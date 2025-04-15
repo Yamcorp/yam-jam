@@ -27,7 +27,7 @@ export class Game extends BaseScene
             align: 'center'
         });
         this.msg_text.setOrigin(0.5);
-        this.player = new Player(this)
+        this.player = new Player(this, this.scale.width / 2, this.scale.height / 2);
     }
 
     update(_time: number, _delta: number): void {
