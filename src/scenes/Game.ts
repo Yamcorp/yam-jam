@@ -1,20 +1,22 @@
 import Player from './characters/Player';
 import { BaseScene } from './abstracts/BaseScene';
+import { Crow } from './characters/Crow';
 
 export class Game extends BaseScene
 {
     camera: Phaser.Cameras.Scene2D.Camera;
     background: Phaser.GameObjects.Image;
     msg_text : Phaser.GameObjects.Text;
+    crows: Crow[] = [];
     private player: Player
 
-    constructor ()
-    {
-        super('Game');
+    constructor () {
+      super('Game');
     }
-    
-    create ()
-    {
+
+    create () {
+        // this.physics.world.gravity.y = 0;
+
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0x00ff00);
 
@@ -28,10 +30,26 @@ export class Game extends BaseScene
         });
         this.msg_text.setOrigin(0.5);
         this.player = new Player(this, this.scale.width / 2, this.scale.height / 2);
+        const crow = new Crow(this, 100, 100, 'fast');
+        crow.setTarget(this.player);
+        this.crows.push(crow);
+
+        this.time.addEvent({
+            delay: 2000,
+            loop: true,
+            callback: () => {
+            const speeds = ['slow', 'medium', 'fast'];
+            const randomSpeed = speeds[Phaser.Math.Between(0, speeds.length - 1)];
+            const newCrow = new Crow(this, Phaser.Math.Between(0, this.scale.width), Phaser.Math.Between(0, this.scale.height), randomSpeed);
+          newCrow.setTarget(this.player);
+          this.crows.push(newCrow);
+            }
+        });
     }
 
     update(_time: number, _delta: number): void {
       this.player.update()
+      this.crows.forEach(crow => crow.update());
       this.msg_text.setText(`Yams Remaining: ${this.dataStore.amountOfYams}`);
     }
   

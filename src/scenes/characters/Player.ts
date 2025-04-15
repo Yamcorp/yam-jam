@@ -29,7 +29,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   update() {
-    let direction = new Phaser.Math.Vector2(0, 0)
+    const direction = new Phaser.Math.Vector2(0, 0)
     if (this.cursors?.left.isDown || this.wasd?.left.isDown) {
         direction.x -= 1
     }
@@ -59,6 +59,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     yam.setRotation(angle);
     this.gameScene.physics.moveTo(yam, pointer.worldX, pointer.worldY, 500);
+
+    this.gameScene.physics.add.overlap(yam, this.gameScene.crows, (yam, crow) => {
+      const crowInstance = crow as any; // Cast to any if necessary
+      if (crowInstance.hitByYam) {
+      crowInstance.hitByYam();
+      }
+      yam.destroy();
+    });
     this.gameScene.time.delayedCall(2000, () => {
       console.log('Yam destroyed');
       yam.destroy();
