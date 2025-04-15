@@ -1,6 +1,7 @@
 import Player from './characters/Player';
 import { BaseScene } from './abstracts/BaseScene';
 import { Crow, CrowSpeed } from './characters/Crow';
+import { Yam } from './interactables/Yam';
 
 export class Game extends BaseScene
 {
@@ -8,6 +9,7 @@ export class Game extends BaseScene
     background: Phaser.GameObjects.Image;
     msg_text : Phaser.GameObjects.Text;
     crows: Crow[] = [];
+    yams: Yam[] = [];
     private player: Player
 
     constructor () {
@@ -15,8 +17,6 @@ export class Game extends BaseScene
     }
 
     create () {
-        // this.physics.world.gravity.y = 0;
-
         this.camera = this.cameras.main;
         this.camera.setBackgroundColor(0x00ff00);
 
@@ -33,18 +33,20 @@ export class Game extends BaseScene
         const crow = new Crow(this, 100, 100, 'fast');
         crow.setTarget(this.player);
         this.crows.push(crow);
+        const yam = new Yam(this, 200, 200);
+        this.yams.push(yam);
 
-        this.time.addEvent({
-            delay: 2000,
-            loop: true,
-            callback: () => {
-            const speeds: CrowSpeed[] = ['slow', 'medium', 'fast'];
-            const randomSpeed = speeds[Phaser.Math.Between(0, speeds.length - 1)];
-            const newCrow = new Crow(this, Phaser.Math.Between(0, this.scale.width), Phaser.Math.Between(0, this.scale.height), randomSpeed);
-          newCrow.setTarget(this.player);
-          this.crows.push(newCrow);
-            }
-        });
+        const spawnCrow = () => {
+          const speeds: CrowSpeed[] = ['slow', 'medium', 'fast'];
+          const randomSpeed = speeds[Phaser.Math.Between(0, speeds.length - 1)];
+          const newCrow = new Crow(this, Phaser.Math.Between(0, this.scale.width), Phaser.Math.Between(0, this.scale.height), randomSpeed);
+          const randomTargets = [this.player, ...this.yams];
+          const randomTarget = randomTargets[Phaser.Math.Between(0, randomTargets.length - 1)];
+          newCrow.setTarget(randomTarget);
+          this.crows.push(newCrow);    
+        }
+
+        this.time.addEvent({ delay: 2000, loop: true, callback: spawnCrow });
     }
 
     update(_time: number, _delta: number): void {
@@ -52,5 +54,4 @@ export class Game extends BaseScene
       this.crows.forEach(crow => crow.update());
       this.msg_text.setText(`Yams Remaining: ${this.dataStore.amountOfYams}`);
     }
-  
 }

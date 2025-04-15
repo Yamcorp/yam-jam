@@ -5,7 +5,7 @@ export abstract class NPC extends Phaser.Physics.Arcade.Sprite {
   private gameScene: BaseScene
 
   constructor(
-    scene: Phaser.Scene,
+    scene: BaseScene,
     texture: string = 'Npc',
     name: string,
     x: number,
@@ -15,7 +15,7 @@ export abstract class NPC extends Phaser.Physics.Arcade.Sprite {
     super(scene, x, y, texture);
     this.name = name;
     this.isInteractable = isInteractable;
-    this.gameScene = scene as BaseScene
+    this.gameScene = scene
 
     // Enable physics for the NPC
     this.gameScene.physics.add.existing(this);

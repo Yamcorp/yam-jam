@@ -1,4 +1,5 @@
 import { NPC } from '../abstracts/NPC';
+import { BaseScene } from '../abstracts/BaseScene'
 
 export type CrowSpeed = 'fast' | 'medium' | 'slow';
 
@@ -7,14 +8,14 @@ export class Crow extends NPC {
   private wobbleOffset: number = 0;
   private crowSpeed: CrowSpeed;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, speed: CrowSpeed) {
+  constructor(scene: BaseScene, x: number, y: number, speed: CrowSpeed) {
     super(scene, 'Crow', 'Crow', x, y, false);
     this.crowSpeed = speed;
   }
   
   interact() {
     console.log('The crow got hit with a yam!');
-    this.gameScene.crows = this.gameScene.crows.filter(crow => crow !== this);
+    this.gameScene.crows = this.gameScene.crows.filter((crow) => crow !== this);
     this.destroy();
   }
 
