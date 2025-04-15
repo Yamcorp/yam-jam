@@ -1,4 +1,5 @@
 import { BaseScene } from '../abstracts/BaseScene'
+import { Crow } from './Crow'
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   private cursors?: Phaser.Types.Input.Keyboard.CursorKeys
@@ -61,10 +62,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.gameScene.physics.moveTo(yam, pointer.worldX, pointer.worldY, 500);
 
     this.gameScene.physics.add.overlap(yam, this.gameScene.crows, (yam, crow) => {
-      const crowInstance = crow as any; // Cast to any if necessary
-      if (crowInstance.hitByYam) {
-      crowInstance.hitByYam();
-      }
+      const crowInstance = crow as Crow;
+      crowInstance.interact();
       yam.destroy();
     });
     this.gameScene.time.delayedCall(2000, () => {

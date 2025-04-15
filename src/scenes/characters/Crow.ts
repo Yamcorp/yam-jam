@@ -14,7 +14,8 @@ export class Crow extends NPC {
   
   interact() {
     console.log('The crow got hit with a yam!');
-    // Additional logic for interaction can be added here
+    this.gameScene.crows = this.gameScene.crows.filter(crow => crow !== this);
+    this.destroy();
   }
 
   setTarget(target: Phaser.GameObjects.Sprite) {
@@ -52,12 +53,6 @@ export class Crow extends NPC {
     velocityX += Math.sin(this.wobbleOffset) * wobbleAmplitude;
     velocityY += Math.cos(this.wobbleOffset) * wobbleAmplitude;
 
-    this?.setVelocity(velocityX, velocityY);
-  }
-
-  hitByYam() {
-    console.log('The crow has been hit by a yam and is destroyed!');
-    this.gameScene.crows = this.gameScene.crows.filter(crow => crow !== this);
-    this.destroy();
+    this.setVelocity(velocityX, velocityY);
   }
 }

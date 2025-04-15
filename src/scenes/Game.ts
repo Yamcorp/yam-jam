@@ -1,6 +1,6 @@
 import Player from './characters/Player';
 import { BaseScene } from './abstracts/BaseScene';
-import { Crow } from './characters/Crow';
+import { Crow, CrowSpeed } from './characters/Crow';
 
 export class Game extends BaseScene
 {
@@ -38,7 +38,7 @@ export class Game extends BaseScene
             delay: 2000,
             loop: true,
             callback: () => {
-            const speeds = ['slow', 'medium', 'fast'];
+            const speeds: CrowSpeed[] = ['slow', 'medium', 'fast'];
             const randomSpeed = speeds[Phaser.Math.Between(0, speeds.length - 1)];
             const newCrow = new Crow(this, Phaser.Math.Between(0, this.scale.width), Phaser.Math.Between(0, this.scale.height), randomSpeed);
           newCrow.setTarget(this.player);
