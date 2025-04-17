@@ -56,7 +56,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       console.log('No more yams to throw!');
       return;
     }
-    this.gameScene.dataStore.amountOfYams--;
+    this.gameScene.dataStore.decreaseYams();
     console.log('Yam thrown! 🍠');
     const yam = new ThrownYam(this.gameScene, this.x, this.y);
     this.gameScene.events.emit('addToScene', yam);

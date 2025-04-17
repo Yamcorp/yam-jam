@@ -8,7 +8,6 @@ export class Game extends BaseScene
 {
   private _camera: Phaser.Cameras.Scene2D.Camera;
   private _background: Phaser.GameObjects.Image;
-  private _msg_text : Phaser.GameObjects.Text;
   private _crows: Crow[] = [];
   private _growingYams: GrownYam[] = [];
   private _thownYams: ThrownYam[] = [];
@@ -25,13 +24,9 @@ export class Game extends BaseScene
     this._background = this.add.image(512, 384, 'background');
     this._background.setAlpha(0.5);
 
-    this._msg_text = this.add.text(250, 30, `Yams Remaining: ${this.dataStore.amountOfYams}`, {
-        fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
-        stroke: '#000000', strokeThickness: 8,
-        align: 'center'
-    });
-    this._msg_text.setOrigin(0.5);
     this._player = new Player(this, this.scale.width / 2, this.scale.height / 2);
+    this._camera.startFollow(this._player);
+
     const crow = new Crow(this, 100, 100, 'fast');
     crow.setTarget(this._player);
     this._crows.push(crow);
@@ -50,12 +45,13 @@ export class Game extends BaseScene
     this.listenForEvents();
 
     this.time.addEvent({ delay: 2000, loop: true, callback: spawnCrow });
+    this.scene.launch('UIScene');
   }
 
   public update (_time: number, _delta: number): void {
     this._player.update()
     this._crows.forEach((crow) => crow.update());
-    this._msg_text.setText(`Yams Remaining: ${this.dataStore.amountOfYams}`);
+    // this._msg_text.setText(`Yams Remaining: ${this.dataStore.amountOfYams}`);
   }
 
   private listenForEvents () {
