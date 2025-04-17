@@ -8,7 +8,7 @@ export class UIScene extends BaseScene {
     super('UIScene');
   }
 
-  create() {
+  create () {
     const x = this.cameras.main.width - 10;
     const y = 10;
     this._yam_amount = this.add.text(x, y, `Yams Remaining: ${this.dataStore.amountOfYams}`, {
@@ -22,7 +22,7 @@ export class UIScene extends BaseScene {
     this.game.events.on(UPDATE_YAM_COUNT, this.updateYamCount, this);
   }
 
-  updateYamCount(amount: number) {
+  public updateYamCount (amount: number) {
     this._yam_amount.setText(`Yams Remaining: ${amount}`);
   }
 }

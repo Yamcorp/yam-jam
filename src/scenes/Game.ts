@@ -69,15 +69,40 @@ export class Game extends BaseScene
       }
 
       const newCrow = new Crow(this, x, y, randomSpeed);
-      const randomTargets = [this._player, ...this._growingYams];
+      const unheldYams = this._growingYams.filter((yam) => !yam.held);
+      const randomTargets = [this._player, ...unheldYams];
       const randomTarget = randomTargets[Phaser.Math.Between(0, randomTargets.length - 1)];
       newCrow.setTarget(randomTarget);
-      this._crows.push(newCrow);
+
+
+      // Add a collision between the New Crow and all Growing Yams
+      this.physics.add.overlap(newCrow, this._growingYams, (crow, yam) => {
+        const yamInstance = yam as GrownYam;
+        // If the Yam is already held do nothing
+        if (yamInstance.held) return
+        const crowInstance = crow as Crow;
+        // Have the Crow grab the Yam
+        crowInstance.grabYam(yamInstance);
+        // Iterate through all the crows and if any of them are targeting this yam
+        //    they should start targeting a new yam
+        this._crows.forEach((crow) => {
+          if (crow === crowInstance) return
+          if (crow.target === yamInstance) {
+            const unheldYams = this._growingYams.filter((y) => !y.held && y !== yamInstance);
+            const potentialNewTargets = [this._player, ...unheldYams];
+            if (potentialNewTargets.length > 0) {
+              const newTarget = potentialNewTargets[Phaser.Math.Between(0, potentialNewTargets.length - 1)]
+              crow.setTarget(newTarget);
+            }
+          }
+        })
+      });
+    this._crows.push(newCrow);
     }
     this.time.addEvent({ delay: 2000, loop: true, callback: spawnCrow });
     
     
-    this.listenForEvents();
+    this._listenForEvents();
     this.scene.launch('UIScene');
   }
 
@@ -86,7 +111,7 @@ export class Game extends BaseScene
     this._crows.forEach((crow) => crow.update());
   }
 
-  private listenForEvents () {
+  private _listenForEvents () {
     this.events.on('removeFromScene', (entity: Crow | GrownYam | ThrownYam) => {
       if (entity instanceof Crow) {
         this._crows = this._crows.filter((crow) => crow !== entity);
