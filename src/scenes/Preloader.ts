@@ -33,6 +33,11 @@ export class Preloader extends Scene
         this.load.setPath('assets');
 
         this.load.image('logo', 'logo.png');
+
+        this.load.spritesheet('Crow', 'crow.png', {
+            frameWidth: 48,
+            frameHeight: 48,
+          });
     }
 
     create ()
@@ -42,5 +47,12 @@ export class Preloader extends Scene
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
         this.scene.start('MainMenu');
+
+        this.anims.create({
+            key: 'crow-fly',
+            frames: this.anims.generateFrameNumbers('Crow', { start: 9, end: 14 }),
+            frameRate: 10,
+            repeat: -1,
+          });
     }
 }

@@ -9,10 +9,22 @@ export class Crow extends NPC {
   private _wobbleOffset: number = 0;
   private _crowSpeed: CrowSpeed;
   private _heldYam: GrownYam | null;
+  private _shadow: Phaser.GameObjects.Graphics;  // Shadow graphic
 
   constructor(scene: BaseScene, x: number, y: number, speed: CrowSpeed) {
     super(scene, 'Crow', 'Crow', x, y, false);
     this._crowSpeed = speed;
+    this.play('crow-fly');
+
+    // Add shadow
+    this._shadow = this.scene.add.graphics();
+    this._shadow.fillStyle(0x000000, 0.05);  // Black shadow with 30% opacity
+    this._shadow.fillCircle(0, 30, 15);  // Adjust size as needed
+    this._shadow.setDepth(20);  // Make sure it's behind the crow
+
+
+    // Initially position the shadow
+    this.updateShadowPosition();
   }
   
   public interact () {
@@ -21,12 +33,26 @@ export class Crow extends NPC {
     this.destroy();
   }
 
+  public destroy() {
+    // Remove the shadow when the crow is destroyed
+    if (this._shadow) {
+      this._shadow.destroy();
+    }
+  
+    // Call the parent class's destroy method
+    super.destroy();
+  }
+  
   public get target () {
     return this._target;
   }
 
   public setTarget (target: Phaser.GameObjects.Sprite) {
     this._target = target;
+  }
+
+  private updateShadowPosition() {
+    this._shadow.setPosition(this.x, this.y + 10);  // Adjust vertical position to place shadow under the crow
   }
 
   public update () {
@@ -50,11 +76,25 @@ export class Crow extends NPC {
       if (distance > 50 || this._target.name === 'Yam') {
         velocityX = (distanceX / distance) * speed;
         velocityY = (distanceY / distance) * speed;
+
+        // Flip the crow if moving left
+        if (velocityX < 0) {
+          this.setFlipX(true);  // Flip the crow to face left
+        } else {
+          this.setFlipX(false); // Keep it facing right
+        }
       } else {
         const angle = Math.atan2(distanceY, distanceX) + Math.PI / 2; 
         const orbitSpeed = 50; 
         velocityX = Math.cos(angle) * orbitSpeed;
         velocityY = Math.sin(angle) * orbitSpeed;
+
+        // Flip the crow if moving left
+        if (velocityX < 0) {
+          this.setFlipX(true);  // Flip the crow to face left
+        } else {
+          this.setFlipX(false); // Keep it facing right
+        }
       }
     } else {
       const worldBounds = this.scene.physics.world.bounds;
@@ -90,7 +130,12 @@ export class Crow extends NPC {
     velocityY += Math.cos(this._wobbleOffset) * wobbleAmplitude;
 
     this.setVelocity(velocityX, velocityY);
+
+    // Update shadow position based on crow's position
+    this.updateShadowPosition();
   }
+
+  
 
   public grabYam (yam: GrownYam) {
     this._heldYam = yam;
