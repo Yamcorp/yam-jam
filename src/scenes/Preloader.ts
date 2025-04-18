@@ -37,22 +37,58 @@ export class Preloader extends Scene
         this.load.spritesheet('Crow', 'crow.png', {
             frameWidth: 48,
             frameHeight: 48,
-          });
+        });
+
+        this.load.spritesheet('PlayerWalkFront', 'player-walk-front.png', {
+            frameWidth: 32,
+            frameHeight: 32,
+        });
+
+        this.load.spritesheet('PlayerWalkBack', 'player-walk-back.png', {
+            frameWidth: 32,
+            frameHeight: 32,
+        });
+
+        this.load.spritesheet('PlayerWalkSide', 'player-walk-side.png', {
+            frameWidth: 32,
+            frameHeight: 32,
+        });
     }
 
     create ()
     {
         //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
         //  For example, you can define global animations here, so we can use them in other scenes.
-
-        //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-        this.scene.start('MainMenu');
-
+        
         this.anims.create({
             key: 'crow-fly',
             frames: this.anims.generateFrameNumbers('Crow', { start: 9, end: 14 }),
             frameRate: 10,
             repeat: -1,
-          });
+        });
+
+        this.anims.create({
+            key: 'player-walk-front',
+            frames: this.anims.generateFrameNumbers('PlayerWalkFront', { start: 1, end: 5 }),
+            frameRate: 10,
+            repeat: -1,
+        });
+
+        this.anims.create({
+            key: 'player-walk-back',
+            frames: this.anims.generateFrameNumbers('PlayerWalkBack', { start: 1, end: 8 }),
+            frameRate: 10,
+            repeat: -1,
+        });
+
+        this.anims.create({
+            key: 'player-walk-side',
+            frames: this.anims.generateFrameNumbers('PlayerWalkSide', { start: 1, end: 5 }),
+            frameRate: 10,
+            repeat: -1,
+        });
+
+        //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
+        this.scene.start('MainMenu');
     }
 }
