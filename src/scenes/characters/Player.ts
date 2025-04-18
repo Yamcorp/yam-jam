@@ -36,19 +36,21 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
   public update () {
     const direction = new Phaser.Math.Vector2(0, 0)
     if (this._cursors?.left.isDown || this._wasd?.left.isDown) {
-        direction.x -= 1
+      direction.x -= 1
     }
     if (this._cursors?.right.isDown || this._wasd?.right.isDown) {
-        direction.x += 1
+      direction.x += 1
     }
     if (this._cursors?.up.isDown || this._wasd?.up.isDown) {
-        direction.y -= 1
+      direction.y -= 1
     }
     if (this._cursors?.down.isDown || this._wasd?.down.isDown) {
-        direction.y += 1
+      direction.y += 1
     }
     direction.normalize().scale(this._speed)
     this.setVelocity(direction.x, direction.y)
+    // Use collider to constrain the player to the world's bounds
+    this.setCollideWorldBounds(true);
   }
 
   public throwYam() {
@@ -56,7 +58,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
       console.log('No more yams to throw!');
       return;
     }
-    this.gameScene.dataStore.amountOfYams--;
+    this.gameScene.dataStore.decreaseYams();
     console.log('Yam thrown! 🍠');
     const yam = new ThrownYam(this.gameScene, this.x, this.y);
     this.gameScene.events.emit('addToScene', yam);
