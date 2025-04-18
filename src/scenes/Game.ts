@@ -44,7 +44,7 @@ export class Game extends BaseScene
     //  Randomly select a target from the array of targets
     //  Add the new Crow to the scene and the _crows array
     const spawnCrow = () => {
-      const speeds: CrowSpeed[] = ['slow', 'medium', 'fast'];
+      const speeds: CrowSpeed[] = ['hover', 'slow', 'medium', 'fast'];
       const randomSpeed = speeds[Phaser.Math.Between(0, speeds.length - 1)];
       const edge = Phaser.Math.Between(0, 3); // 0: top, 1: right, 2: bottom, 3: left
       let x = 0, y = 0;
@@ -82,7 +82,15 @@ export class Game extends BaseScene
         if (yamInstance.held) return
         const crowInstance = crow as Crow;
         // Have the Crow grab the Yam
-        crowInstance.grabYam(yamInstance);
+        if (crowInstance.y < yamInstance.y - 20) {
+          crowInstance.isOverYam = true;
+          crowInstance.crowSpeed = 'hover';
+          this.time.delayedCall(Phaser.Math.Between(759, 1000), () => {
+            crowInstance.grabYam(yamInstance);
+            crowInstance.isOverYam = false;
+            crowInstance.crowSpeed = 'slow';
+          })
+        }
         // Iterate through all the crows and if any of them are targeting this yam
         //    they should start targeting a new yam
         this._crows.forEach((crow) => {
