@@ -73,7 +73,7 @@ export class Crow extends NPC {
       const distanceY = this._target.y - this.y - 30;
       const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
   
-      console.log('target', this._target.name);
+      // console.log('target', this._target.name);
       if (distance > 50 || this._target.name === 'Yam') {
         velocityX = (distanceX / distance) * speed;
         velocityY = (distanceY / distance) * speed;

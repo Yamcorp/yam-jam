@@ -35,16 +35,18 @@ export class Game extends BaseScene
     for (let i = 0; i < Phaser.Math.Between(5, 10); i++) {
       const x = Phaser.Math.Between(0, this.physics.world.bounds.width);
       const y = Phaser.Math.Between(0, this.physics.world.bounds.height);
-      const yam = new GrownYam(this, x, y);
+      const yam = new GrownYam(this, x, y, 'ripe');
       this._growingYams.push(yam);
     }
+    this.physics.add.collider(this._player, this._growingYams);
+
 
     // Function to spawn a Crow every 2 seconds
     //  Randomly select a speed from the array
     //  Randomly select a target from the array of targets
     //  Add the new Crow to the scene and the _crows array
     const spawnCrow = () => {
-      const speeds: CrowSpeed[] = ['hover', 'slow', 'medium', 'fast'];
+      const speeds: CrowSpeed[] = ['slow', 'medium', 'fast'];
       const randomSpeed = speeds[Phaser.Math.Between(0, speeds.length - 1)];
       const edge = Phaser.Math.Between(0, 3); // 0: top, 1: right, 2: bottom, 3: left
       let x = 0, y = 0;

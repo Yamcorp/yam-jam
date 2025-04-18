@@ -6,6 +6,8 @@ export class ThrownYam extends Phaser.Physics.Arcade.Sprite {
   constructor(scene: BaseScene, x: number, y: number) {
     super(scene, x, y, 'Yam');
     this._gameScene = scene
+    this.setTexture('Yam', 4)
+    this.setScale(2)
   }
 
   public get gameScene (): BaseScene {
@@ -22,7 +24,7 @@ export class ThrownYam extends Phaser.Physics.Arcade.Sprite {
     this.gameScene.physics.moveTo(this, pointer.worldX, pointer.worldY, 500);
 
     this.gameScene.time.delayedCall(2000, () => {
-      console.log('Yam destroyed');
+      // console.log('Yam destroyed');
       this.destroy();
     });
   }
