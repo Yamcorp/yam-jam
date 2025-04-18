@@ -3,8 +3,8 @@ import DataStorePlugin from "../../plugins/DataStorePlugin";
 export abstract class BaseScene extends Phaser.Scene {
   dataStore!: DataStorePlugin
 
-  constructor(key: string) {
-    super(key);
+  constructor(config?: string | Phaser.Types.Scenes.SettingsConfig) {
+    super(config);
   }
 
   preload() {
