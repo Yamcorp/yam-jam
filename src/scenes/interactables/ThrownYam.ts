@@ -29,7 +29,7 @@ export class ThrownYam extends Phaser.Physics.Arcade.Sprite {
   }
 
   public override destroy (): void {
-    super.destroy();
     this.gameScene.events.emit('removeFromScene', this);
+    super.destroy();
   }
 }

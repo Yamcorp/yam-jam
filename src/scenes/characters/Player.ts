@@ -108,6 +108,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         yam.growthState === 'harvested' ? randomNumber = 1 : randomNumber = Math.round(Math.random() * 6);
         this.gameScene.dataStore.increaseYams(randomNumber);
       }
-    })
+    }) 
+  }
+
+  public override destroy() {
+    this.gameScene.events.emit("removeFromScene", this)
+    super.destroy()
   }
 }

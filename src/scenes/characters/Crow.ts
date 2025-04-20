@@ -31,6 +31,7 @@ export class Crow extends NPC {
   
   public interact () {
     this.dropYam();
+    this.gameScene.events.emit("removeFromScene", this)
     this.destroy();
   }
 
@@ -39,7 +40,7 @@ export class Crow extends NPC {
     if (this._shadow) {
       this._shadow.destroy();
     }
-  
+    this.gameScene.events.emit("removeFromScene", this)
     super.destroy();
   }
 

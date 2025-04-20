@@ -9,9 +9,9 @@ export class Game extends BaseScene
   public growingYams: GrownYam[] = [];
   public throwingYams: ThrownYam[] = [];
   public player: Player | undefined
+  public Crows: Crow[] = [];
   private _camera: Phaser.Cameras.Scene2D.Camera | undefined;
   private _background: Phaser.GameObjects.Image | undefined;
-  private _crows: Crow[] = [];
   private _worldWidth = 1024;
   private _worldHeight = 1024;
 
@@ -43,7 +43,7 @@ export class Game extends BaseScene
     // Function to spawn a Crow every 2 seconds
     //  Randomly select a speed from the array
     //  Randomly select a target from the array of targets
-    //  Add the new Crow to the scene and the _crows array
+    //  Add the new Crow to the scene and the Crows array
     const spawnCrow = () => {
       const speeds: CrowSpeed[] = ['slow', 'medium', 'fast'];
       const randomSpeed = speeds[Phaser.Math.Between(0, speeds.length - 1)];
@@ -95,7 +95,7 @@ export class Game extends BaseScene
         }
         // Iterate through all the crows and if any of them are targeting this yam
         //    they should start targeting a new yam
-        this._crows.forEach((crow) => {
+        this.Crows.forEach((crow) => {
           if (crow === crowInstance) return
           if (crow.target === yamInstance) {
             const unheldYams = this.growingYams.filter((y) => !y.held && y !== yamInstance);
@@ -107,7 +107,7 @@ export class Game extends BaseScene
           }
         })
       });
-    this._crows.push(newCrow);
+    this.Crows.push(newCrow);
     }
     this.time.addEvent({ delay: 2000, loop: true, callback: spawnCrow });
 
@@ -117,13 +117,13 @@ export class Game extends BaseScene
 
   public override update (_time: number, _delta: number): void {
     this.player?.update()
-    this._crows.forEach((crow) => crow.update());
+    this.Crows.forEach((crow) => crow.update());
   }
 
   private _listenForEvents () {
     this.events.on('removeFromScene', (entity: Crow | GrownYam | ThrownYam) => {
       if (entity instanceof Crow) {
-        this._crows = this._crows.filter((crow) => crow !== entity);
+        this.Crows = this.Crows.filter((crow) => crow !== entity);
       } else if (entity instanceof GrownYam) {
         this.growingYams = this.growingYams.filter((yam) => yam !== entity);
       } else if (entity instanceof ThrownYam) {
@@ -133,12 +133,12 @@ export class Game extends BaseScene
 
     this.events.on('addToScene', (entity: Crow | GrownYam | ThrownYam) => {
       if (entity instanceof Crow) {
-        this._crows.push(entity);
+        this.Crows.push(entity);
       } else if (entity instanceof GrownYam) {
         this.growingYams.push(entity);
       } else if (entity instanceof ThrownYam) {
         this.throwingYams.push(entity);
-        this.physics.add.overlap(entity, this._crows, (yam, crow) => {
+        this.physics.add.overlap(entity, this.Crows, (yam, crow) => {
           const crowInstance = crow as Crow;
           crowInstance.interact();
           yam.destroy();

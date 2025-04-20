@@ -18,8 +18,11 @@ export class GrownYam extends NPC {
     // initialize appropriate texture
     this.updateTexture();
 
-    scene.physics.add.collider(scene.player, this);
-    scene.physics.add.overlap(scene.player, this);
+    if (scene.player){
+      scene.physics.add.collider(scene.player, this);
+      scene.physics.add.overlap(scene.player, this);
+    }
+
     if (this.body) {
       this.body.immovable = true;
     }
@@ -70,6 +73,7 @@ export class GrownYam extends NPC {
 
   public override destroy() {
     this.pickUpZone?.destroy();
+    this.gameScene.events.emit("removeFromScene", this)
     super.destroy();
   }
 }
