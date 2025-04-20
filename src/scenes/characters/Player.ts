@@ -1,7 +1,7 @@
 import { Game } from '../Game'
 import { ThrownYam } from '../interactables/ThrownYam'
 
-export default class Player extends Phaser.Physics.Arcade.Sprite {
+export class Player extends Phaser.Physics.Arcade.Sprite {
   private _cursors?: Phaser.Types.Input.Keyboard.CursorKeys
   private _wasd?: { [key: string]: Phaser.Input.Keyboard.Key }
   private _speed: number

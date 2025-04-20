@@ -1,4 +1,4 @@
-import Player from './characters/Player';
+import { Player } from './characters/Player';
 import { BaseScene } from './abstracts/BaseScene';
 import { Crow, CrowSpeed } from './characters/Crow';
 import { GrownYam } from './interactables/GrownYam';
@@ -8,9 +8,9 @@ export class Game extends BaseScene
 {
   public growingYams: GrownYam[] = [];
   public throwingYams: ThrownYam[] = [];
-  public player: Player
-  private _camera: Phaser.Cameras.Scene2D.Camera;
-  private _background: Phaser.GameObjects.Image;
+  public player: Player | undefined
+  private _camera: Phaser.Cameras.Scene2D.Camera | undefined;
+  private _background: Phaser.GameObjects.Image | undefined;
   private _crows: Crow[] = [];
   private _worldWidth = 1024;
   private _worldHeight = 1024;
@@ -115,8 +115,8 @@ export class Game extends BaseScene
     this.scene.launch('UIScene');
   }
 
-  public update (_time: number, _delta: number): void {
-    this.player.update()
+  public override update (_time: number, _delta: number): void {
+    this.player?.update()
     this._crows.forEach((crow) => crow.update());
   }
 

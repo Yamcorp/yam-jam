@@ -1,6 +1,7 @@
 import { NPC } from '../abstracts/NPC';
 import { BaseScene } from '../abstracts/BaseScene'
 import { GrownYam } from '../interactables/GrownYam';
+import { Player } from '../characters/Player';
 
 export type CrowSpeed = 'fast' | 'medium' | 'slow' | 'hover';
 
@@ -46,7 +47,7 @@ export class Crow extends NPC {
     return this._target;
   }
 
-  public setTarget (target: Phaser.GameObjects.Sprite) {
+  public setTarget (target: GrownYam | Player | undefined) {
     this._target = target;
   }
 
