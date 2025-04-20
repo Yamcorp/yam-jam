@@ -83,7 +83,8 @@ export class Game extends BaseScene
         if (yamInstance.held) return
         const crowInstance = crow as Crow;
         // Have the Crow grab the Yam
-        if (crowInstance.y < yamInstance.y - 20) {
+        
+        if (!crowInstance.isOverYam && (crowInstance.y < yamInstance.y - 20)) {
           crowInstance.isOverYam = true;
           crowInstance.crowSpeed = 'hover';
           this.time.delayedCall(Phaser.Math.Between(759, 1000), () => {

@@ -29,7 +29,6 @@ export class Crow extends NPC {
   }
   
   public interact () {
-    console.log('The crow got hit with a yam!');
     this.dropYam();
     this.destroy();
   }
@@ -73,7 +72,6 @@ export class Crow extends NPC {
       const distanceY = this._target.y - this.y - 30;
       const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
   
-      // console.log('target', this._target.name);
       if (distance > 50 || this._target.name === 'Yam') {
         velocityX = (distanceX / distance) * speed;
         velocityY = (distanceY / distance) * speed;
@@ -142,6 +140,7 @@ export class Crow extends NPC {
     this._heldYam = yam;
     this.crowSpeed = 'slow'
     yam.held = true;
+    yam.growYam()
   }
 
   public dropYam () {

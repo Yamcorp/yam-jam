@@ -41,14 +41,12 @@ export class GrownYam extends NPC {
     this.pickUpZone?.setPosition(this.x, this.y);
   }
 
-  private updateTexture() {
-    console.log("update texture")
-    console.log(`this.growthState: ${this.growthState}`)
+  public updateTexture() {
     switch (this.growthState) {
-      case 'seed': {this.setTexture('Yam', 2); console.log(" texture updated seed")}; break;
-      case 'sprout': {this.setTexture('Yam', 3); console.log(" texture updated sprout")}; break;
-      case 'ripe': {this.setTexture('Yam', 4); console.log(" texture updated ripe")}; break;
-      case 'harvested': {this.setTexture('Yam', 1); console.log(" texture updated harvested")}; break;
+      case 'seed': this.setTexture('Yam', 2); break;
+      case 'sprout': this.setTexture('Yam', 3); break;
+      case 'ripe': this.setTexture('Yam', 4); break;
+      case 'harvested': this.setTexture('Yam', 1); break;
     }
   }
 
@@ -66,7 +64,7 @@ export class GrownYam extends NPC {
         this.growthState = 'harvested';
         this.updateTexture();
       }; break;
-      case 'harvested': console.log("You tried to grow a yam that was already harvested..."); break;
+      case 'harvested': console.log("You tried to grow a fully grown Yam.."); break;
     }
   }
 

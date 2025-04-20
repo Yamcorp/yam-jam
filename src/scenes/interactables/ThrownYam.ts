@@ -24,7 +24,6 @@ export class ThrownYam extends Phaser.Physics.Arcade.Sprite {
     this.gameScene.physics.moveTo(this, pointer.worldX, pointer.worldY, 500);
 
     this.gameScene.time.delayedCall(2000, () => {
-      // console.log('Yam destroyed');
       this.destroy();
     });
   }
