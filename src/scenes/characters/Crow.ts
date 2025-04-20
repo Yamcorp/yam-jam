@@ -5,10 +5,10 @@ import { GrownYam } from '../interactables/GrownYam';
 export type CrowSpeed = 'fast' | 'medium' | 'slow' | 'hover';
 
 export class Crow extends NPC {
-  private _target: Phaser.GameObjects.Sprite;
+  private _target: Phaser.GameObjects.Sprite | undefined;
   private _wobbleOffset: number = 0;
   public crowSpeed: CrowSpeed;
-  private _heldYam: GrownYam | null;
+  private _heldYam: GrownYam | null | undefined;
   private _shadow: Phaser.GameObjects.Graphics; 
   public isOverYam: boolean = false;
 
@@ -33,7 +33,7 @@ export class Crow extends NPC {
     this.destroy();
   }
 
-  public destroy() {
+  public override destroy() {
     // Remove the shadow when the crow is destroyed
     if (this._shadow) {
       this._shadow.destroy();
@@ -54,7 +54,7 @@ export class Crow extends NPC {
     this._shadow.setPosition(this.x, this.y + 10);  // Adjust vertical position to place shadow under the crow
   }
 
-  public update () {
+  public override update () {
     let speed: number;
     switch (this.crowSpeed) {
       case 'fast': speed = Phaser.Math.Between(150, 225); break;
@@ -68,22 +68,30 @@ export class Crow extends NPC {
     let velocityY = 0;
 
     if (!this._heldYam) {
-      const distanceX = this._target.x - this.x;
-      const distanceY = this._target.y - this.y - 30;
-      const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+      var distanceX;
+      var distanceY
+      var distance;
+      if (this._target) {
+        distanceX = this._target?.x - this.x;
+        distanceY = this._target?.y - this.y - 30;
+        distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+      }
   
-      if (distance > 50 || this._target.name === 'Yam') {
-        velocityX = (distanceX / distance) * speed;
-        velocityY = (distanceY / distance) * speed;
+      if (distance && distanceX && distanceY) {
+
+        if (distance > 50 || this._target?.name === 'Yam') {
+          velocityX = (distanceX / distance) * speed;
+          velocityY = (distanceY / distance) * speed;
 
         this.setSpriteDirection(velocityX)
-      } else {
-        const angle = Math.atan2(distanceY, distanceX) + Math.PI / 2; 
-        const orbitSpeed = 50; 
-        velocityX = Math.cos(angle) * orbitSpeed;
-        velocityY = Math.sin(angle) * orbitSpeed;
-        
-        this.setSpriteDirection(velocityX)
+        } else {
+          const angle = Math.atan2(distanceY, distanceX) + Math.PI / 2; 
+          const orbitSpeed = 50; 
+          velocityX = Math.cos(angle) * orbitSpeed;
+          velocityY = Math.sin(angle) * orbitSpeed;
+          
+          this.setSpriteDirection(velocityX)
+        }
       }
     } else {
       const worldBounds = this.scene.physics.world.bounds;

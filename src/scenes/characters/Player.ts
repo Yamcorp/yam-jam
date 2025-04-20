@@ -38,7 +38,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     return this._gameScene;
   }
 
-  public update () {
+  public override update () {
     const direction = new Phaser.Math.Vector2(0, 0)
     let moving = false;
 

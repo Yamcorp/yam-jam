@@ -35,7 +35,7 @@ export class GrownYam extends NPC {
     console.log('It is yamming it up');
   }
 
-  public update() {
+  public override update() {
     super.update()
     this.setPosition(this.x, this.y);
     this.pickUpZone?.setPosition(this.x, this.y);
@@ -68,7 +68,7 @@ export class GrownYam extends NPC {
     }
   }
 
-  public destroy() {
+  public override destroy() {
     this.pickUpZone?.destroy();
     super.destroy();
   }
