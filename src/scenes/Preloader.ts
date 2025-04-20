@@ -56,7 +56,7 @@ export class Preloader extends Scene
 
         this.load.spritesheet('Yam', 'yam.png', {
             frameWidth: 16,
-            frameHeight: 32,
+            frameHeight: 20,
         });
     }
 

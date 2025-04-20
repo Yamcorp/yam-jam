@@ -1,17 +1,31 @@
 import { NPC } from '../abstracts/NPC';
-import { BaseScene } from '../abstracts/BaseScene'
+import { Game } from '../Game'
 
 export type YamGrowthState = 'seed' | 'sprout' | 'ripe' | 'harvested';
 
 export class GrownYam extends NPC {
   public held = false;
-  public growthState: YamGrowthState = 'seed'
+  public growthState: YamGrowthState = 'seed';
+  public pickUpZone: Phaser.GameObjects.Zone | undefined;
 
-  constructor(scene: BaseScene, x: number, y: number, growthState: YamGrowthState) {
+  constructor(scene: Game, x: number, y: number, growthState: YamGrowthState) {
     super(scene, 'Yam', 'Yam', x, y, true);
     this.updateTexture();
     this.setScale(2)
+
     if (growthState) this.growthState = growthState
+
+    scene.physics.add.collider(scene.player, this);
+    scene.physics.add.overlap(scene.player, this);
+    if (this.body) {
+      this.body.immovable = true;
+    }
+
+    this.pickUpZone = scene.add.zone(this.x, this.y, 40, 50);
+    scene.physics.add.existing(this.pickUpZone);
+    (this.pickUpZone.body as Phaser.Physics.Arcade.Body).setAllowGravity(false);
+    (this.pickUpZone.body as Phaser.Physics.Arcade.Body).setImmovable(true);
+    
   }
 
   public interact (): void {
@@ -21,6 +35,7 @@ export class GrownYam extends NPC {
   public update() {
     super.update()
     this.setPosition(this.x, this.y);
+    this.pickUpZone?.setPosition(this.x, this.y);
   }
 
   private updateTexture() {
@@ -50,5 +65,8 @@ export class GrownYam extends NPC {
     }
   }
 
-
+  public destroy() {
+    this.pickUpZone?.destroy();
+    super.destroy();
+  }
 }

@@ -1,17 +1,17 @@
-import { BaseScene } from '../abstracts/BaseScene'
+import { Game } from '../Game'
 import { ThrownYam } from '../interactables/ThrownYam'
 
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   private _cursors?: Phaser.Types.Input.Keyboard.CursorKeys
   private _wasd?: { [key: string]: Phaser.Input.Keyboard.Key }
   private _speed: number
-  private _gameScene: BaseScene
+  private _gameScene: Game
   private _lastDirection: 'front' | 'back' | 'side' = 'front';
 
   
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, 'Player')
-    this._gameScene = scene as BaseScene
+    this._gameScene = scene as Game
 
     this.setScale(2)
     this._gameScene.add.existing(this)
@@ -29,9 +29,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this._speed = 250
 
     this.gameScene.input.on('pointerdown', this.throwYam, this);
+
+    this._gameScene.input.keyboard?.on('keydown-E', this.interact, this);
+
   }
 
-  public get gameScene (): BaseScene {
+  public get gameScene (): Game {
     return this._gameScene;
   }
 
@@ -95,5 +98,16 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     const yam = new ThrownYam(this.gameScene, this.x, this.y);
     this.gameScene.events.emit('addToScene', yam);
     yam.create();
+  }
+
+  public interact() {
+    // if by a ripe growingYam, harvest some yams
+    this.gameScene.growingYams.forEach((yam) => {
+      if (this.gameScene.physics.overlap(this, yam.pickUpZone)) {
+        yam.destroy()
+        const randomNumber = Math.round(Math.random() * 6)
+        this.gameScene.dataStore.increaseYams(randomNumber);
+      }
+    })
   }
 }
