@@ -5,15 +5,18 @@ export type YamGrowthState = 'seed' | 'sprout' | 'ripe' | 'harvested';
 
 export class GrownYam extends NPC {
   public held = false;
-  public growthState: YamGrowthState = 'seed';
+  public growthState: YamGrowthState | undefined;
   public pickUpZone: Phaser.GameObjects.Zone | undefined;
 
   constructor(scene: Game, x: number, y: number, growthState: YamGrowthState) {
     super(scene, 'Yam', 'Yam', x, y, true);
-    this.updateTexture();
     this.setScale(2)
 
-    if (growthState) this.growthState = growthState
+    // set initial growthState
+    growthState ? this.growthState = growthState : this.growthState = 'seed'
+
+    // initialize appropriate texture
+    this.updateTexture();
 
     scene.physics.add.collider(scene.player, this);
     scene.physics.add.overlap(scene.player, this);
@@ -39,11 +42,13 @@ export class GrownYam extends NPC {
   }
 
   private updateTexture() {
+    console.log("update texture")
+    console.log(`this.growthState: ${this.growthState}`)
     switch (this.growthState) {
-      case 'seed': this.setTexture('Yam', 1); break;
-      case 'sprout': this.setTexture('Yam', 2); break;
-      case 'ripe': this.setTexture('Yam', 3); break;
-      case 'harvested': this.setTexture('Yam', 4); break;
+      case 'seed': {this.setTexture('Yam', 2); console.log(" texture updated seed")}; break;
+      case 'sprout': {this.setTexture('Yam', 3); console.log(" texture updated sprout")}; break;
+      case 'ripe': {this.setTexture('Yam', 4); console.log(" texture updated ripe")}; break;
+      case 'harvested': {this.setTexture('Yam', 1); console.log(" texture updated harvested")}; break;
     }
   }
 
