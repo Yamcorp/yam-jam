@@ -11,7 +11,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     //#region Phaser Lifecycle -----------------------------
     // -----------------------------------------------------
 
-    init(): void {
+    override init(): void {
         // TODO: this is breaking... create Singleton Class
         // elsewhere and import it here...
         // newing up a Scene here causes a race condition to
@@ -20,7 +20,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
         // this.clockSceneSingleton = new Phaser.Scene("ClockSceneSingleton");
         // this.pluginManager.game.scene.add("ClockSceneSingleton", this.clockSceneSingleton, true);
 
-               
+
     }
 
     override start(): void {
@@ -40,7 +40,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     }
 
     // TODO: Not sure about these impl. details...
-    stop(): void {
+    override stop(): void {
         this.pluginManager.game.scene.remove("ClockSingleton");
         this.destroy();
     }
