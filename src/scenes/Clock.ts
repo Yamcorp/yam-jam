@@ -1,6 +1,4 @@
-import { BaseScene } from "./abstracts/BaseScene";
-
-export default class Clock extends BaseScene {
+export default class ClockSingleton extends Phaser.Scene {
     /**
      * members
      */
@@ -10,7 +8,6 @@ export default class Clock extends BaseScene {
      */
     constructor() {
         super("ClockSingleton");
-        
     }
 
     //#region optional life cycle methods
