@@ -1,4 +1,5 @@
 import { Game } from '../Game'
+import { GrownYam } from '../interactables/GrownYam'
 import { ThrownYam } from '../interactables/ThrownYam'
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
@@ -6,7 +7,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   private _wasd?: { [key: string]: Phaser.Input.Keyboard.Key }
   private _speed: number
   private _gameScene: Game
-  private _lastDirection: 'front' | 'back' | 'side' = 'front';
+  private _lastDirection: 'front' | 'back' | 'left' | 'right' = 'front';
 
   
   constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -46,13 +47,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       direction.x -= 1
       this.anims.play('player-walk-side', true)
       this.setFlipX(true)
-      this._lastDirection = 'side'
+      this._lastDirection = 'left'
       moving = true;
     } else if (this._cursors?.right.isDown || this._wasd?.right.isDown) {
       direction.x += 1
       this.anims.play('player-walk-side', true)
       this.setFlipX(false)
-      this._lastDirection = 'side'
+      this._lastDirection = 'right'
       moving = true;
     } else if (this._cursors?.up.isDown || this._wasd?.up.isDown) {
       direction.y -= 1
@@ -75,7 +76,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         case 'back':
           this.setTexture('PlayerWalkBack', 2);
           break;
-        case 'side':
+        case 'left':
+          this.setTexture('PlayerWalkSide', 4);
+          break;
+        case 'right':
           this.setTexture('PlayerWalkSide', 4);
           break;
       }
@@ -99,16 +103,55 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   public interact() {
-    // if by a ripe growingYam, harvest some yams
-    this.gameScene.growingYams.forEach((yam) => {
-      if (this.gameScene.physics.overlap(this, yam.pickUpZone)) {
-        yam.destroy()
-        
-        var randomNumber = undefined
-        yam.growthState === 'harvested' ? randomNumber = 1 : randomNumber = Math.round(Math.random() * 6);
-        this.gameScene.dataStore.increaseYams(randomNumber);
+    // check if by a ripe yam, and if so harvest some yams
+    for (let i=0; i<this.gameScene.growingYams.length; i++){
+      const yam = this.gameScene.growingYams[i]
+      if (this.harvestYam(yam)) {
+        return;
       }
-    }) 
+    }
+
+    // otherwise if you have a yam in inventory plant one in front of you
+    if (this.gameScene.dataStore.amountOfYams > 0) {
+      this.plantYam();
+      return;
+    }
+  }
+
+  private harvestYam(yam: GrownYam) {
+    if (this.gameScene.physics.overlap(this, yam.pickUpZone) && yam.growthState === 'ripe' || yam.growthState === 'harvested') {
+      yam.destroy()
+      let randomNumber = undefined
+      yam.growthState === 'harvested' ? randomNumber = 1 : randomNumber = Math.round(Math.random() * 6);
+      this.gameScene.dataStore.increaseYams(randomNumber);
+      return true;
+    }
+  }
+
+  private plantYam() {
+    this.gameScene.dataStore._amountOfYams = this.gameScene.dataStore.amountOfYams - 1
+    let x = this.body?.center.x;
+    let y = this.body?.center.y;
+    
+    if (!x || !y) return
+
+    switch (this._lastDirection) {
+      case 'front':  
+        y += 50
+        break;
+      case 'left':
+        x -= 30;
+        break;
+      case 'right':
+        x += 30;
+        break;
+      case 'back':
+        y -= 50;
+        break;
+    }
+
+    let yam = new GrownYam(this.gameScene, x, y, 'seed');
+    this.gameScene.growingYams.push(yam);
   }
 
   public override destroy() {

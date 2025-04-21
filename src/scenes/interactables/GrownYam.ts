@@ -20,7 +20,7 @@ export class GrownYam extends NPC {
 
     if (scene.player){
       scene.physics.add.collider(scene.player, this);
-      scene.physics.add.overlap(scene.player, this);
+      // scene.physics.add.overlap(scene.player, this);
     }
 
     if (this.body) {
@@ -35,7 +35,7 @@ export class GrownYam extends NPC {
   }
 
   public interact (): void {
-    console.log('It is yamming it up');
+    // console.log('It is yamming it up');
   }
 
   public override update() {
