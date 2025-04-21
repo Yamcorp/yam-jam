@@ -30,7 +30,7 @@ const config: Types.Core.GameConfig = {
     plugins: {
         global: [
           { key: 'DataStorePlugin', plugin: DataStorePlugin, start: true },
-          { key: 'ClockPlugin', plugin: ClockPlugin, start: true }
+          { key: 'ClockPlugin', plugin: ClockPlugin }
         ]
     },
     scene: [
