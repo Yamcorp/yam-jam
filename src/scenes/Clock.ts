@@ -7,7 +7,7 @@ export default class ClockSingleton extends Phaser.Scene {
      *
      */
     constructor() {
-        super("ClockSingleton");
+        super({ key: "ClockSingleton", active: true });
     }
 
     //#region optional life cycle methods
@@ -23,6 +23,7 @@ export default class ClockSingleton extends Phaser.Scene {
      * create
      */
     create() {
+        console.log("ClockSingleton created & event ready emitted");
         this.events.emit("ready");
     }
     //#endregion
