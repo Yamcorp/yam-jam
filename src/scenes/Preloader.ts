@@ -30,7 +30,6 @@ export class Preloader extends Scene
 
     preload ()
     {
-        console.dir(this.scene);
         //  Load the assets for the game - Replace with your own assets
         this.load.setPath('assets');
 
