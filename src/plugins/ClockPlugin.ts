@@ -8,35 +8,32 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     }
 
     // -----------------------------------------------------
-    //#region Phaser Lifecycle -----------------------------
+    //#region Lifecycle ------------------------------------
     // -----------------------------------------------------
 
     override init(): void {
-        // TODO: this is breaking... create Singleton Class
-        // elsewhere and import it here...
-        // newing up a Scene here causes a race condition to
-        // when i am trying to register the event in the start method
+        // TODO: maybe start the clock here? (else it starts at main menu)
         console.log("ClockPlugin initialized");
-        // this.clockSceneSingleton = new Phaser.Scene("ClockSceneSingleton");
-        // this.pluginManager.game.scene.add("ClockSceneSingleton", this.clockSceneSingleton, true);
-
-
     }
 
     override start(): void {
-
+        console.log("~~clock plugin started~~");
         this.clockSceneSingleton = this.pluginManager.game.scene.getScene("ClockSingleton");
 
-        console.log(this.clockSceneSingleton);
-        this.clockSceneSingleton.events.once("ready", () => {
-            this.clock = this.clockSceneSingleton.time;
+        if (!this.clockSceneSingleton) {
+            console.error("ClockSingleton scene not found!");
+            return;
+        }
 
-            this.clock.addEvent({
-                delay: 1000,
-                loop: true,
-                callback: () => console.log("Global Clock Tick")
-            });
-        });
+        if (this.clockSceneSingleton.sys.isActive()) {
+            console.log("Clock Singleton is active! \n --starting logger--");
+            this.startLogger();
+        } else {
+            console.warn("Clock Singleton not active! \n --waiting for it to emit ready--");
+            this.clockSceneSingleton.events.once("ready", () => this.startLogger());
+        }
+
+
     }
 
     // TODO: Not sure about these impl. details...
@@ -46,7 +43,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     }
 
     // -----------------------------------------------------
-    //#endregion -------------------------------------------
+    //#endregion Lifecycle ---------------------------------
 
     // -----------------------------------------------------
     //#region Public API -----------------------------------
@@ -54,6 +51,10 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
 
     getTime(): number {
         return this.clock.now;
+    }
+
+    getElapsedTime(): number {
+        return this.clock.startTime - this.clock.now;
     }
 
     pauseTime(): void {
@@ -76,7 +77,38 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
         this.clock.paused = false;
     }
 
+    /**
+     * this is a test method to log the clock ticks to the console
+     */
+    startLogger() {
+        this.clock = this.clockSceneSingleton.time;
+        console.dir(this.clock);
+
+        this.clock.addEvent({
+            delay: 2000,
+            loop: true,
+            callback: () => {
+                console.log(`Global Clock Tick : @ ${this.clock.now} \n Elapsed: ${this.getElapsedTime().toFixed(1)}`);
+                console.dir(this.clock);
+            },
+        });
+    }
+
+    /**
+     * this method will simultaneously start the day and end the night cycles
+     */
+    startDay() {
+        // TODO: begin day cycle
+    }
+
+    /**
+     * this method will simultaneously start the night and end the day cycles
+     */
+    startNight() {
+        // TODO: begin night cycle
+    }
+
     // -----------------------------------------------------
-    //#endregion -------------------------------------------
+    //#endregion Public API --------------------------------
 
 }
