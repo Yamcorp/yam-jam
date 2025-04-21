@@ -82,12 +82,18 @@ export class Game extends BaseScene
         // If the Yam is already held do nothing
         if (yamInstance.held) return
         const crowInstance = crow as Crow;
-        // Have the Crow grab the Yam
-        
-        if (!crowInstance.isOverYam && (crowInstance.y < yamInstance.y - 20)) {
+        // if the crow is over the yam and the crow is within 10 spaces (vertically) of the spot 20 spaces above the yam
+        if (!crowInstance.isOverYam && (Math.abs(crowInstance.y + 20 - yamInstance.y) < 10)) {
           crowInstance.isOverYam = true;
           crowInstance.crowSpeed = 'hover';
           this.time.delayedCall(Phaser.Math.Between(759, 1000), () => {
+
+            // yam no longer exists previously destroyed
+            if (!yamInstance.active || !yamInstance.body) {
+              return
+              // crow should also pick a new target eventually
+            };
+            // Have the Crow grab the Yam
             crowInstance.grabYam(yamInstance);
             crowInstance.isOverYam = false;
             crowInstance.crowSpeed = 'slow';
