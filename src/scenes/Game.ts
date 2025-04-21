@@ -1,6 +1,6 @@
 import { Player } from './characters/Player';
 import { BaseScene } from './abstracts/BaseScene';
-import { Crow, CrowSpeed } from './characters/Crow';
+import { Crow } from './characters/Crow';
 import { GrownYam } from './interactables/GrownYam';
 import { ThrownYam } from './interactables/ThrownYam';
 
