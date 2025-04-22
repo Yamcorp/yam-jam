@@ -59,6 +59,9 @@ export class Preloader extends Scene
             frameWidth: 16,
             frameHeight: 20,
         });
+
+        this.load.audio("fart-00", "/audio/fart-00.mp3");
+        this.load.audio("yeet", "/audio/yeet.mp3");
     }
 
     create ()
