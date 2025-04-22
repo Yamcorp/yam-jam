@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import ClockSingleton from './Clock';
 
 export class Preloader extends Scene
 {
@@ -34,6 +35,8 @@ export class Preloader extends Scene
 
         this.load.image('logo', 'logo.png');
 
+        this.scene.add('ClockSingleton', new ClockSingleton());
+
         this.load.spritesheet('Crow', 'crow.png', {
             frameWidth: 48,
             frameHeight: 48,
@@ -59,7 +62,7 @@ export class Preloader extends Scene
     {
         //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
         //  For example, you can define global animations here, so we can use them in other scenes.
-        
+
         this.anims.create({
             key: 'crow-fly',
             frames: this.anims.generateFrameNumbers('Crow', { start: 9, end: 14 }),
