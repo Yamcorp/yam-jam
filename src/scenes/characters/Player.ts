@@ -135,7 +135,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   private plantYam() {
-    this.gameScene.dataStore._amountOfYams = this.gameScene.dataStore.amountOfYams - 1
+    this.gameScene.dataStore.decreaseYams();
     let x = this.body?.center.x;
     let y = this.body?.center.y;
     
