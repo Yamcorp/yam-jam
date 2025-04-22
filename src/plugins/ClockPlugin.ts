@@ -1,7 +1,8 @@
+import ClockSingleton from "../scenes/Clock";
+
 export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     private clockSceneSingleton!: Phaser.Scene;
-    private clock!: Phaser.Time.Clock;
-    // TODO: define private variables like time events and time scale
+    public gameClock!: Phaser.Time.Clock;
 
     constructor(pluginManager: Phaser.Plugins.PluginManager) {
         super(pluginManager);
@@ -12,21 +13,18 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     // -----------------------------------------------------
 
     override init(): void {
-        // TODO: maybe start the clock here? (else it starts at main menu)
         console.log("ClockPlugin initialized");
+        this.game.scene.add("ClockSingleton", new ClockSingleton());
+        this.clockSceneSingleton = this.pluginManager.game.scene.getScene("ClockSingleton");
     }
 
     override start(): void {
-        console.log("~~clock plugin started~~");
-        this.clockSceneSingleton = this.pluginManager.game.scene.getScene("ClockSingleton");
-
         if (!this.clockSceneSingleton) {
             console.error("ClockSingleton scene not found!");
             return;
         }
 
         if (this.clockSceneSingleton.sys.isActive()) {
-            console.log("Clock Singleton is active! \n --starting logger--");
             this.startLogger();
         } else {
             console.warn("Clock Singleton not active! \n --waiting for it to emit ready--");
@@ -50,46 +48,47 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     // -----------------------------------------------------
 
     getTime(): number {
-        return this.clock.now;
+        return this.gameClock.now;
     }
 
     getElapsedTime(): number {
-        return this.clock.startTime - this.clock.now;
+        return this.gameClock.now - this.gameClock.startTime;
     }
 
     pauseTime(): void {
-        this.clock.paused = true;
+        this.gameClock.paused = true;
     }
 
     resumeTime(): void {
-        this.clock.paused = false;
+        this.gameClock.paused = false;
     }
 
     scheduleOnce(delay: number, callback: () => void) {
-        this.clock.delayedCall(delay, callback);
+        this.gameClock.delayedCall(delay, callback);
     }
 
     pauseAllEvents() {
-        this.clock.paused = true;
+        this.gameClock.paused = true;
     }
 
     resumeAllEvents() {
-        this.clock.paused = false;
+        this.gameClock.paused = false;
     }
 
     /**
      * this is a test method to log the clock ticks to the console
      */
     startLogger() {
-        this.clock = this.clockSceneSingleton.time;
-        console.dir(this.clock);
+        this.gameClock = this.clockSceneSingleton.time;
+        console.log(`logger started at -> ${this.gameClock.now}`);
+        console.dir(this.gameClock);
 
-        this.clock.addEvent({
+        this.gameClock.addEvent({
             delay: 2000,
             loop: true,
             callback: () => {
-                console.log(`Global Clock Tick : @ ${this.clock.now} \n Elapsed: ${this.getElapsedTime().toFixed(1)}`);
-                console.dir(this.clock);
+                console.log(`Global Clock Tick : @ ${this.gameClock.now} \n Elapsed: ${this.getElapsedTime().toFixed(1)}`);
+                console.dir(this.gameClock);
             },
         });
     }
