@@ -1,4 +1,4 @@
-import Player from './characters/Player';
+import { Player } from './characters/Player';
 import { BaseScene } from './abstracts/BaseScene';
 import { Crow, CrowSpeed } from './characters/Crow';
 import { GrownYam } from './interactables/GrownYam';
@@ -6,12 +6,12 @@ import { ThrownYam } from './interactables/ThrownYam';
 
 export class Game extends BaseScene
 {
-  private _camera: Phaser.Cameras.Scene2D.Camera;
-  private _background: Phaser.GameObjects.Image;
-  private _crows: Crow[] = [];
-  private _growingYams: GrownYam[] = [];
-  private _thownYams: ThrownYam[] = [];
-  private _player: Player
+  public growingYams: GrownYam[] = [];
+  public throwingYams: ThrownYam[] = [];
+  public player: Player | undefined
+  public Crows: Crow[] = [];
+  private _camera: Phaser.Cameras.Scene2D.Camera | undefined;
+  private _background: Phaser.GameObjects.Image | undefined;
   private _worldWidth = 1024;
   private _worldHeight = 1024;
 
@@ -29,22 +29,23 @@ export class Game extends BaseScene
     this._background = this.add.image(512, 384, 'background');
     this._background.setAlpha(0.5);
 
-    this._player = new Player(this, this.physics.world.bounds.width / 2, this.physics.world.bounds.height / 2);
-    this._camera.startFollow(this._player);
+    this.player = new Player(this, this.physics.world.bounds.width / 2, this.physics.world.bounds.height / 2);
+    this._camera.startFollow(this.player);
 
+    // Spawn a bunch of yams randomly
     for (let i = 0; i < Phaser.Math.Between(5, 10); i++) {
       const x = Phaser.Math.Between(0, this.physics.world.bounds.width);
       const y = Phaser.Math.Between(0, this.physics.world.bounds.height);
-      const yam = new GrownYam(this, x, y);
-      this._growingYams.push(yam);
+      const yam = new GrownYam(this, x, y, 'ripe');
+      this.growingYams.push(yam);
     }
 
     // Function to spawn a Crow every 2 seconds
     //  Randomly select a speed from the array
     //  Randomly select a target from the array of targets
-    //  Add the new Crow to the scene and the _crows array
+    //  Add the new Crow to the scene and the Crows array
     const spawnCrow = () => {
-      const speeds: CrowSpeed[] = ['hover', 'slow', 'medium', 'fast'];
+      const speeds: CrowSpeed[] = ['slow', 'medium', 'fast'];
       const randomSpeed = speeds[Phaser.Math.Between(0, speeds.length - 1)];
       const edge = Phaser.Math.Between(0, 3); // 0: top, 1: right, 2: bottom, 3: left
       let x = 0, y = 0;
@@ -69,23 +70,30 @@ export class Game extends BaseScene
       }
 
       const newCrow = new Crow(this, x, y, randomSpeed);
-      const unheldYams = this._growingYams.filter((yam) => !yam.held);
-      const randomTargets = [this._player, ...unheldYams];
+      const unheldYams = this.growingYams.filter((yam) => !yam.held);
+      const randomTargets = [this.player, ...unheldYams];
       const randomTarget = randomTargets[Phaser.Math.Between(0, randomTargets.length - 1)];
       newCrow.setTarget(randomTarget);
 
 
       // Add a collision between the New Crow and all Growing Yams
-      this.physics.add.overlap(newCrow, this._growingYams, (crow, yam) => {
+      this.physics.add.overlap(newCrow, this.growingYams, (crow, yam) => {
         const yamInstance = yam as GrownYam;
         // If the Yam is already held do nothing
         if (yamInstance.held) return
         const crowInstance = crow as Crow;
-        // Have the Crow grab the Yam
-        if (crowInstance.y < yamInstance.y - 20) {
+        // if the crow is over the yam and the crow is within 10 spaces (vertically) of the spot 20 spaces above the yam
+        if (!crowInstance.isOverYam && (Math.abs(crowInstance.y + 20 - yamInstance.y) < 10)) {
           crowInstance.isOverYam = true;
           crowInstance.crowSpeed = 'hover';
           this.time.delayedCall(Phaser.Math.Between(759, 1000), () => {
+
+            // yam no longer exists previously destroyed
+            if (!yamInstance.active || !yamInstance.body) {
+              return
+              // crow should also pick a new target eventually
+            };
+            // Have the Crow grab the Yam
             crowInstance.grabYam(yamInstance);
             crowInstance.isOverYam = false;
             crowInstance.crowSpeed = 'slow';
@@ -93,11 +101,11 @@ export class Game extends BaseScene
         }
         // Iterate through all the crows and if any of them are targeting this yam
         //    they should start targeting a new yam
-        this._crows.forEach((crow) => {
+        this.Crows.forEach((crow) => {
           if (crow === crowInstance) return
           if (crow.target === yamInstance) {
-            const unheldYams = this._growingYams.filter((y) => !y.held && y !== yamInstance);
-            const potentialNewTargets = [this._player, ...unheldYams];
+            const unheldYams = this.growingYams.filter((y) => !y.held && y !== yamInstance);
+            const potentialNewTargets = [this.player, ...unheldYams];
             if (potentialNewTargets.length > 0) {
               const newTarget = potentialNewTargets[Phaser.Math.Between(0, potentialNewTargets.length - 1)]
               crow.setTarget(newTarget);
@@ -105,39 +113,38 @@ export class Game extends BaseScene
           }
         })
       });
-    this._crows.push(newCrow);
+    this.Crows.push(newCrow);
     }
     this.time.addEvent({ delay: 2000, loop: true, callback: spawnCrow });
-    
-    
+
     this._listenForEvents();
     this.scene.launch('UIScene');
   }
 
-  public update (_time: number, _delta: number): void {
-    this._player.update()
-    this._crows.forEach((crow) => crow.update());
+  public override update (_time: number, _delta: number): void {
+    this.player?.update()
+    this.Crows.forEach((crow) => crow.update());
   }
 
   private _listenForEvents () {
     this.events.on('removeFromScene', (entity: Crow | GrownYam | ThrownYam) => {
       if (entity instanceof Crow) {
-        this._crows = this._crows.filter((crow) => crow !== entity);
+        this.Crows = this.Crows.filter((crow) => crow !== entity);
       } else if (entity instanceof GrownYam) {
-        this._growingYams = this._growingYams.filter((yam) => yam !== entity);
+        this.growingYams = this.growingYams.filter((yam) => yam !== entity);
       } else if (entity instanceof ThrownYam) {
-        this._thownYams = this._thownYams.filter((yam) => yam !== entity);
+        this.throwingYams = this.throwingYams.filter((yam) => yam !== entity);
       }
     });
 
     this.events.on('addToScene', (entity: Crow | GrownYam | ThrownYam) => {
       if (entity instanceof Crow) {
-        this._crows.push(entity);
+        this.Crows.push(entity);
       } else if (entity instanceof GrownYam) {
-        this._growingYams.push(entity);
+        this.growingYams.push(entity);
       } else if (entity instanceof ThrownYam) {
-        this._thownYams.push(entity);
-        this.physics.add.overlap(entity, this._crows, (yam, crow) => {
+        this.throwingYams.push(entity);
+        this.physics.add.overlap(entity, this.Crows, (yam, crow) => {
           const crowInstance = crow as Crow;
           crowInstance.interact();
           yam.destroy();

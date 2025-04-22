@@ -43,8 +43,8 @@ export abstract class NPC extends Phaser.Physics.Arcade.Sprite {
   /**
    * Cleans up resources when the NPC is destroyed.
    */
-  public destroy (): void {
-    super.destroy();
+  public override destroy (): void {
     this.gameScene.events.emit('removeFromScene', this);
+    super.destroy();
   }
 }
