@@ -35,30 +35,34 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     return this._gameScene;
   }
 
-  public update () {
+  public override update () {
     const direction = new Phaser.Math.Vector2(0, 0)
     let moving = false;
 
+    let animation: string | null = null
     if (this._cursors?.left.isDown || this._wasd?.left.isDown) {
       direction.x -= 1
-      this.anims.play('player-walk-side', true)
+      animation = 'player-walk-side'
       this.setFlipX(true)
       this._lastDirection = 'side'
       moving = true;
-    } else if (this._cursors?.right.isDown || this._wasd?.right.isDown) {
+    }
+    if (this._cursors?.right.isDown || this._wasd?.right.isDown) {
       direction.x += 1
-      this.anims.play('player-walk-side', true)
+      animation = 'player-walk-side'
       this.setFlipX(false)
       this._lastDirection = 'side'
       moving = true;
-    } else if (this._cursors?.up.isDown || this._wasd?.up.isDown) {
+    } 
+    if (this._cursors?.up.isDown || this._wasd?.up.isDown) {
       direction.y -= 1
-      this.anims.play('player-walk-back', true)
+      animation = 'player-walk-back'
       this._lastDirection = 'back'
       moving = true;
-    } else if (this._cursors?.down.isDown || this._wasd?.down.isDown) {
+    } 
+    if (this._cursors?.down.isDown || this._wasd?.down.isDown) {
       direction.y += 1
-      this.anims.play('player-walk-front', true)
+      animation = 'player-walk-front'
       this._lastDirection = 'front'
       moving = true;
     }
@@ -76,6 +80,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
           this.setTexture('PlayerWalkSide', 4);
           break;
       }
+    } else if (animation) {
+      this.anims.play(animation, true)
     }
 
     direction.normalize().scale(this._speed)
