@@ -56,6 +56,11 @@ export class Preloader extends Scene
             frameWidth: 32,
             frameHeight: 32,
         });
+
+        this.load.spritesheet('Yam', 'yam.png', {
+            frameWidth: 16,
+            frameHeight: 20,
+        });
     }
 
     create ()
@@ -65,28 +70,28 @@ export class Preloader extends Scene
 
         this.anims.create({
             key: 'crow-fly',
-            frames: this.anims.generateFrameNumbers('Crow', { start: 9, end: 14 }),
+            frames: this.anims.generateFrameNumbers('Crow', { start: 8, end: 14 }),
             frameRate: 10,
             repeat: -1,
         });
 
         this.anims.create({
             key: 'player-walk-front',
-            frames: this.anims.generateFrameNumbers('PlayerWalkFront', { start: 1, end: 5 }),
+            frames: this.anims.generateFrameNumbers('PlayerWalkFront', { start: 0, end: 4 }),
             frameRate: 10,
             repeat: -1,
         });
 
         this.anims.create({
             key: 'player-walk-back',
-            frames: this.anims.generateFrameNumbers('PlayerWalkBack', { start: 1, end: 8 }),
+            frames: this.anims.generateFrameNumbers('PlayerWalkBack', { start: 0, end: 4 }),
             frameRate: 10,
             repeat: -1,
         });
 
         this.anims.create({
             key: 'player-walk-side',
-            frames: this.anims.generateFrameNumbers('PlayerWalkSide', { start: 1, end: 5 }),
+            frames: this.anims.generateFrameNumbers('PlayerWalkSide', { start: 0, end: 7 }),
             frameRate: 10,
             repeat: -1,
         });
