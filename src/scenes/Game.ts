@@ -143,14 +143,14 @@ export class Game extends BaseScene
     yamZoneLayer.setVisible(false); // Hide layer
 
     // UNCOMMENT TO SEE YAMZONE LAYER (AND UNCOMMENT GRAPHICS STROKE BELLOW)
-    const graphics = this.add.graphics({ lineStyle: { width: 1, color: 0xff0000 } });
+    // const graphics = this.add.graphics({ lineStyle: { width: 1, color: 0xff0000 } });
     yamZoneLayer.forEachTile((tile) => {
       if (tile.index === 1768) {
         const tileX = tile.getLeft() / 16; // Tile X-index in the world map
         const tileY = tile.getTop() / 16; // Tile Y-index in the world map
         
         // UNCOMMENT TO SEE YAMZONE LAYER (AND UNCOMMENT GRAPHICS DECLARATION ABOVE)
-        graphics.strokeRect(tile.getCenterX() - (tile.width / 2), tile.getCenterY() - (tile.height / 2), tile.width, tile.height);
+        // graphics.strokeRect(tile.getCenterX() - (tile.width / 2), tile.getCenterY() - (tile.height / 2), tile.width, tile.height);
 
         this.yamZoneTiles.push({ x: tileX, y: tileY, hasYam: false });
       }
