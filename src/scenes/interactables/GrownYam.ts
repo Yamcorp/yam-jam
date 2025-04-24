@@ -7,6 +7,7 @@ export class GrownYam extends NPC {
   public held = false;
   public growthState: YamGrowthState | undefined;
   public pickUpZone: Phaser.GameObjects.Zone | undefined;
+  private _collider
 
   constructor(scene: Game, x: number, y: number, growthState: YamGrowthState) {
     super(scene, 'Yam', 'Yam', x, y, true);
@@ -16,26 +17,23 @@ export class GrownYam extends NPC {
     growthState ? this.growthState = growthState : this.growthState = 'seed'
 
     // initialize appropriate texture
-    this.updateTexture();
+    this._updateTexture();
 
-    if (scene.player){
-      scene.physics.add.collider(scene.player, this);
-      scene.physics.add.overlap(scene.player, this);
+    if (scene.player && this.growthState === 'ripe'){
+      this._collider = scene.physics.add.collider(scene.player, this);
     }
 
     if (this.body) {
       this.body.immovable = true;
     }
 
-    this.pickUpZone = scene.add.zone(this.x, this.y, 40, 50);
-    scene.physics.add.existing(this.pickUpZone);
-    (this.pickUpZone.body as Phaser.Physics.Arcade.Body).setAllowGravity(false);
-    (this.pickUpZone.body as Phaser.Physics.Arcade.Body).setImmovable(true);
-    
+    if (this.growthState === 'ripe' || this.growthState === 'harvested'){
+      this._addPickUpZone()
+    }
   }
 
   public interact (): void {
-    console.log('It is yamming it up');
+    // console.log('It is yamming it up');
   }
 
   public override update() {
@@ -44,7 +42,7 @@ export class GrownYam extends NPC {
     this.pickUpZone?.setPosition(this.x, this.y);
   }
 
-  public updateTexture() {
+  private _updateTexture() {
     switch (this.growthState) {
       case 'seed': this.setTexture('Yam', 2); break;
       case 'sprout': this.setTexture('Yam', 3); break;
@@ -53,19 +51,29 @@ export class GrownYam extends NPC {
     }
   }
 
+  private _addPickUpZone() {
+    this.pickUpZone = this.scene.add.zone(this.x, this.y, 40, 50);
+    this.scene.physics.add.existing(this.pickUpZone);
+    (this.pickUpZone.body as Phaser.Physics.Arcade.Body).setAllowGravity(false);
+    (this.pickUpZone.body as Phaser.Physics.Arcade.Body).setImmovable(true);
+  }
+
   public growYam() {
     switch (this.growthState) {
       case 'seed': {
         this.growthState = 'sprout';
-        this.updateTexture();
+        this._updateTexture();
       }; break;
       case 'sprout': {
         this.growthState = 'ripe';
-        this.updateTexture();
+        this._collider = this.scene.physics.add.collider(this.scene.player, this);
+        this._addPickUpZone();
+        this._updateTexture();
       }; break;
       case 'ripe': {
         this.growthState = 'harvested';
-        this.updateTexture();
+        this._collider?.destroy();
+        this._updateTexture();
       }; break;
       case 'harvested': console.log("You tried to grow a fully grown Yam.."); break;
     }
