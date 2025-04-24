@@ -61,6 +61,9 @@ export class Preloader extends Scene
             frameWidth: 16,
             frameHeight: 20,
         });
+
+        this.load.image('tiles', 'atlas.png');
+        this.load.tilemapTiledJSON('tilemap', 'level.json');
     }
 
     create ()

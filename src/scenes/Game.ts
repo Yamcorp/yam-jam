@@ -11,34 +11,28 @@ export class Game extends BaseScene
   public player: Player | undefined
   public Crows: Crow[] = [];
   private _camera: Phaser.Cameras.Scene2D.Camera | undefined;
-  private _background: Phaser.GameObjects.Image | undefined;
-  private _worldWidth = 1024;
-  private _worldHeight = 1024;
+  private _collisionLayer!: Phaser.Tilemaps.TilemapLayer
+  private _map!: Phaser.Tilemaps.Tilemap
+  private _tileset!: string | Phaser.Tilemaps.Tileset | string[] | Phaser.Tilemaps.Tileset[]
+  private _yamZone!: Phaser.GameObjects.Zone
 
   constructor () {
     super('Game');
   }
 
   public create () {
-    this.cameras.main.setBounds(0, 0, this._worldWidth, this._worldHeight);
+    this._createMap()
     this._camera = this.cameras.main;
-    this._camera.setBackgroundColor(0x00ff00);
-    
-    this.physics.world.setBounds(0, 0, this._worldWidth, this._worldHeight);
-    
-    this._background = this.add.image(512, 384, 'background');
-    this._background.setAlpha(0.5);
 
-    this.player = new Player(this, this.physics.world.bounds.width / 2, this.physics.world.bounds.height / 2);
+    this.player = new Player(this, this._map.widthInPixels/ 30 * 51, this._map.heightInPixels / 30 * 13);
+    this.player.setBodySize(this.player.width / 2, this.player.height / 2); // set hitbox dimensions
+    this.player.setOffset(this.player.width / 4, this.player.height / 2)    //offset hitbox
+    
+    this._map.createLayer('top layer', this._tileset, 0, 0)?.setScale(2);
+    this._registerZones()
     this._camera.startFollow(this.player);
 
-    // Spawn a bunch of yams randomly
-    for (let i = 0; i < Phaser.Math.Between(5, 10); i++) {
-      const x = Phaser.Math.Between(0, this.physics.world.bounds.width);
-      const y = Phaser.Math.Between(0, this.physics.world.bounds.height);
-      const yam = new GrownYam(this, x, y, 'ripe');
-      this.growingYams.push(yam);
-    }
+    this._initializeYams()
 
     // Function to spawn a Crow every 2 seconds
     //  Add the new Crow to the scene and the Crows array
@@ -104,5 +98,58 @@ export class Game extends BaseScene
         });
       }
     });
+  }
+
+  private _createMap() {
+    const map = this.make.tilemap({ key: 'tilemap' });
+    if (!map) return;
+    else this._map = map;
+
+    this.physics.world.setBounds(0, 0, map.widthInPixels * 2, map.heightInPixels * 2);
+  
+    const tileset = map.addTilesetImage('atlas', 'tiles');
+    if (!tileset) return
+    else this._tileset = tileset
+  
+    map.createLayer('ground layer', tileset, 0, 0)?.setScale(2);
+    map.createLayer('world layer', tileset, 0, 0)?.setScale(2);
+    map.createLayer('world layer 2', tileset, 0, 0)?.setScale(2);
+    map.createLayer('door closed', tileset, 0, 0)?.setScale(2);
+
+  }
+
+  private _registerZones() {
+    const collisionLayer = this._map.createLayer('collision', this._tileset, 0, 0)?.setScale(2);
+    if (!collisionLayer) return;
+  
+    collisionLayer.setCollision([1768]);
+    collisionLayer.setVisible(false); // Hide layer
+  
+    this._collisionLayer = collisionLayer;
+  
+    if (this.player) {
+      this.physics.add.collider(this.player, this._collisionLayer);
+    }
+  }
+
+  private _initializeYams() {
+    // Spawn a bunch of yams randomly
+
+    const zoneX = this._map.widthInPixels/30 * 4
+    const zoneY = this._map.widthInPixels/30 * 3
+    const zoneWidth = this._map.widthInPixels/30 * (56 * 2);
+    const zoneHeight = this._map.widthInPixels/30 * (35 * 2);
+
+    const yamzoneLayer = this._map.getLayer('yam zone')?.tilemapLayer;
+    if (!yamzoneLayer) return;
+  
+    this._yamZone = this.add.zone(zoneX, zoneY, zoneWidth, zoneHeight).setOrigin(0).setScale(2);
+
+    for (let i = 0; i < Phaser.Math.Between(5, 10); i++) {
+      const x = Phaser.Math.Between(0, zoneWidth);
+      const y = Phaser.Math.Between(0, zoneHeight);
+      const yam = new GrownYam(this, x, y, 'ripe');
+      this.growingYams.push(yam);
+    }
   }
 }
