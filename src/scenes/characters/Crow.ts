@@ -16,6 +16,7 @@ export class Crow extends Phaser.Physics.Arcade.Sprite {
 
   constructor(scene: BaseScene, x: number, y: number, speed: CrowSpeed | undefined = undefined) {
     super(scene, x, y, 'Crow');
+    this.setScale(0.5)
     this._gameScene = scene as Game
     scene.add.existing(this);
     scene.physics.add.existing(this);
@@ -75,8 +76,8 @@ export class Crow extends Phaser.Physics.Arcade.Sprite {
     // Add shadow
     this._shadow = this.scene.add.graphics();
     this._shadow.fillStyle(0x000000, 0.05);  // Black shadow with 30% opacity
-    this._shadow.fillCircle(0, 30, 15);
-    this._shadow.setDepth(20);
+    this._shadow.fillCircle(0, 15, 7);
+    this._shadow.setDepth(10);
 
     // Initially position the shadow
     this.updateShadowPosition();
@@ -141,9 +142,9 @@ export class Crow extends Phaser.Physics.Arcade.Sprite {
   private _handleMovement() {
     let speed: number;
     switch (this.crowSpeed) {
-      case 'fast': speed = Phaser.Math.Between(150, 225); break;
-      case 'medium': speed = Phaser.Math.Between(100, 200); break;
-      case 'slow': speed = Phaser.Math.Between(50, 100); break;
+      case 'fast': speed = Phaser.Math.Between(120, 170); break;
+      case 'medium': speed = Phaser.Math.Between(60, 140); break;
+      case 'slow': speed = Phaser.Math.Between(40, 60); break;
       case 'hover': speed = 0; break;
       default:
       speed = 100; // Default speed if none is set
@@ -198,7 +199,7 @@ export class Crow extends Phaser.Physics.Arcade.Sprite {
 
     if (this._target?.body) {
       distanceX = this._target?.x - this.x;
-      distanceY = this._target?.y - this.y - 30;
+      distanceY = this._target?.y - this.y - 15;
       distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
     } else {
       this._assignTarget()
@@ -206,14 +207,14 @@ export class Crow extends Phaser.Physics.Arcade.Sprite {
 
 
     if (distance && distanceX && distanceY) {
-      if (distance > 50 || this._target?.name === 'Yam') {
+      if (distance > 25 || this._target?.name === 'Yam') {
         velocityX = (distanceX / distance) * speed;
         velocityY = (distanceY / distance) * speed;
 
       this.setSpriteDirection(velocityX)
       } else {
         const angle = Math.atan2(distanceY, distanceX) + Math.PI / 2; 
-        const orbitSpeed = 50; 
+        const orbitSpeed = 25; 
         velocityX = Math.cos(angle) * orbitSpeed;
         velocityY = Math.sin(angle) * orbitSpeed;
         this.setSpriteDirection(velocityX)

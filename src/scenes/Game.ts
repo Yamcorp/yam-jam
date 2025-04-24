@@ -14,7 +14,7 @@ export class Game extends BaseScene
   private _collisionLayer!: Phaser.Tilemaps.TilemapLayer
   private _map!: Phaser.Tilemaps.Tilemap
   private _tileset!: string | Phaser.Tilemaps.Tileset | string[] | Phaser.Tilemaps.Tileset[]
-  private _yamZone!: Phaser.GameObjects.Zone
+  public yamZoneTiles: any[] = []
 
   constructor () {
     super('Game');
@@ -23,12 +23,14 @@ export class Game extends BaseScene
   public create () {
     this._createMap()
     this._camera = this.cameras.main;
+    this._camera.setZoom(2);
 
-    this.player = new Player(this, this._map.widthInPixels/ 30 * 51, this._map.heightInPixels / 30 * 13);
+    this.player = new Player(this, this._map.widthInPixels/ 60 * 51, this._map.heightInPixels / 60 * 13);
+
     this.player.setBodySize(this.player.width / 2, this.player.height / 2); // set hitbox dimensions
-    this.player.setOffset(this.player.width / 4, this.player.height / 2)    //offset hitbox
+    this.player.setOffset(this.player.width / 4, this.player.height / 2); 
     
-    this._map.createLayer('top layer', this._tileset, 0, 0)?.setScale(2);
+    this._map.createLayer('top layer', this._tileset, 0, 0);
     this._registerZones()
     this._camera.startFollow(this.player);
 
@@ -111,15 +113,13 @@ export class Game extends BaseScene
     if (!tileset) return
     else this._tileset = tileset
   
-    map.createLayer('ground layer', tileset, 0, 0)?.setScale(2);
-    map.createLayer('world layer', tileset, 0, 0)?.setScale(2);
-    map.createLayer('world layer 2', tileset, 0, 0)?.setScale(2);
-    map.createLayer('door closed', tileset, 0, 0)?.setScale(2);
-
+    map.createLayer('ground layer', tileset, 0, 0);
+    map.createLayer('world layer', tileset, 0, 0);
+    map.createLayer('world layer 2', tileset, 0, 0);
   }
 
   private _registerZones() {
-    const collisionLayer = this._map.createLayer('collision', this._tileset, 0, 0)?.setScale(2);
+    const collisionLayer = this._map.createLayer('collision', this._tileset, 0, 0);
     if (!collisionLayer) return;
   
     collisionLayer.setCollision([1768]);
@@ -135,20 +135,33 @@ export class Game extends BaseScene
   private _initializeYams() {
     // Spawn a bunch of yams randomly
 
-    const zoneX = this._map.widthInPixels/30 * 4
-    const zoneY = this._map.widthInPixels/30 * 3
-    const zoneWidth = this._map.widthInPixels/30 * (56 * 2);
-    const zoneHeight = this._map.widthInPixels/30 * (35 * 2);
+    const yamZoneLayer = this._map.createLayer('yam zone', this._tileset, 0, 0);
+    if (!yamZoneLayer) {
+      console.log("yamZoneLayer error loading")
+      return
+    }
+    yamZoneLayer.setVisible(false); // Hide layer
 
-    const yamzoneLayer = this._map.getLayer('yam zone')?.tilemapLayer;
-    if (!yamzoneLayer) return;
-  
-    this._yamZone = this.add.zone(zoneX, zoneY, zoneWidth, zoneHeight).setOrigin(0).setScale(2);
+    // UNCOMMENT TO SEE YAMZONE LAYER (AND UNCOMMENT GRAPHICS STROKE BELLOW)
+    const graphics = this.add.graphics({ lineStyle: { width: 1, color: 0xff0000 } });
+    yamZoneLayer.forEachTile((tile) => {
+      if (tile.index === 1768) {
+        const worldX = tile.getCenterX(); // World position for center of tile
+        const worldY = tile.getCenterY(); // World position for center of tile
+        
+        // UNCOMMENT TO SEE YAMZONE LAYER (AND UNCOMMENT GRAPHICS DECLARATION ABOVE)
+        graphics.strokeRect(worldX - (tile.width / 2), worldY - (tile.height / 2), tile.width, tile.height);
 
-    for (let i = 0; i < Phaser.Math.Between(5, 10); i++) {
-      const x = Phaser.Math.Between(0, zoneWidth);
-      const y = Phaser.Math.Between(0, zoneHeight);
-      const yam = new GrownYam(this, x, y, 'ripe');
+        this.yamZoneTiles.push({ x: worldX, y: worldY, hasYam: false });
+      }
+    });
+
+    const spawnCount = 7;
+    for (let i = 0; i < spawnCount && this.yamZoneTiles.length > 0; i++) {
+
+      const tile = Phaser.Utils.Array.GetRandom(this.yamZoneTiles);
+      tile.hasYam = true
+      const yam = new GrownYam(this, tile.x, tile.y, 'ripe');
       this.growingYams.push(yam);
     }
   }
