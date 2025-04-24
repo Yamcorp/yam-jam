@@ -32,6 +32,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.gameScene.input.on('pointerdown', this.throwYam, this);
 
     this._gameScene.input.keyboard?.on('keydown-E', this.interact, this);
+    this._gameScene.input.keyboard?.on('keydown-I', this.growAllYams, this);
 
   }
 
@@ -163,5 +164,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   public override destroy() {
     this.gameScene.events.emit("removeFromScene", this)
     super.destroy()
+  }
+
+    // this function just exists for now to show what the growth cycle looks like
+  // TODO: disable
+  private growAllYams(): void{
+    const unripeYams = this.gameScene.growingYams.filter(
+      (yam) => yam.growthState === 'seed' || yam.growthState === 'sprout'
+    ) 
+    unripeYams.forEach((yam) => yam.growYam());
   }
 }
