@@ -6,7 +6,7 @@ export class ThrownYam extends Phaser.Physics.Arcade.Sprite {
   constructor(scene: BaseScene, x: number, y: number) {
     super(scene, x, y, 'Yam');
     this._gameScene = scene
-    this.setTexture('Yam', 4)
+    this.setTexture('Yam', 1)
     this.setScale(2)
   }
 
