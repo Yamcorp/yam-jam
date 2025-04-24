@@ -1,9 +1,8 @@
 import { Player } from './characters/Player';
 import { BaseScene } from './abstracts/BaseScene';
 import { Crow } from './characters/Crow';
-import { GrownYam } from './interactables/GrownYam';
+import { GrownYam, YamTile } from './interactables/GrownYam';
 import { ThrownYam } from './interactables/ThrownYam';
-
 export class Game extends BaseScene
 {
   public growingYams: GrownYam[] = [];
@@ -14,7 +13,8 @@ export class Game extends BaseScene
   private _collisionLayer!: Phaser.Tilemaps.TilemapLayer
   private _map!: Phaser.Tilemaps.Tilemap
   private _tileset!: string | Phaser.Tilemaps.Tileset | string[] | Phaser.Tilemaps.Tileset[]
-  public yamZoneTiles: any[] = []
+  public yamZoneTiles: YamTile[] = []
+
 
   constructor () {
     super('Game');
@@ -146,13 +146,13 @@ export class Game extends BaseScene
     const graphics = this.add.graphics({ lineStyle: { width: 1, color: 0xff0000 } });
     yamZoneLayer.forEachTile((tile) => {
       if (tile.index === 1768) {
-        const worldX = tile.getCenterX(); // World position for center of tile
-        const worldY = tile.getCenterY(); // World position for center of tile
+        const tileX = tile.getLeft() / 16; // Tile X-index in the world map
+        const tileY = tile.getTop() / 16; // Tile Y-index in the world map
         
         // UNCOMMENT TO SEE YAMZONE LAYER (AND UNCOMMENT GRAPHICS DECLARATION ABOVE)
-        graphics.strokeRect(worldX - (tile.width / 2), worldY - (tile.height / 2), tile.width, tile.height);
+        graphics.strokeRect(tile.getCenterX() - (tile.width / 2), tile.getCenterY() - (tile.height / 2), tile.width, tile.height);
 
-        this.yamZoneTiles.push({ x: worldX, y: worldY, hasYam: false });
+        this.yamZoneTiles.push({ x: tileX, y: tileY, hasYam: false });
       }
     });
 
@@ -161,7 +161,7 @@ export class Game extends BaseScene
 
       const tile = Phaser.Utils.Array.GetRandom(this.yamZoneTiles);
       tile.hasYam = true
-      const yam = new GrownYam(this, tile.x, tile.y, 'ripe');
+      const yam = new GrownYam(this, tile.x * 16 + 8, tile.y * 16 + 8, 'ripe');
       this.growingYams.push(yam);
     }
   }

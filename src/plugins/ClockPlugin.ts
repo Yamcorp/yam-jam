@@ -27,7 +27,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
 
         if (this.clockSceneSingleton.sys.isActive()) {
             console.log("Clock Singleton is active! \n --starting logger--");
-            this.startLogger();
+            // this.startLogger();
         } else {
             console.warn("Clock Singleton not active! \n --waiting for it to emit ready--");
             this.clockSceneSingleton.events.once("ready", () => this.startLogger());

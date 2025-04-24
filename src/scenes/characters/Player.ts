@@ -57,10 +57,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       this.setFlipX(true)
       this._lastDirection = 'left'
       this._interactZone?.setPosition(this.x - 16, this.y + 8);
-      console.log('this.y: ', this.y)
-      console.log('this.x: ', this.x)
-      console.log('this.width: ', this.width)
-      console.log('this.height: ', this.height)
       moving = true;
     }
     if (this._cursors?.right.isDown || this._wasd?.right.isDown) {
@@ -154,46 +150,38 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   private plantYam() {
-    this.gameScene.dataStore.decreaseYams();
-    let x = this.body?.center.x;
-    let y = this.body?.center.y;
+    let x = this._interactZone?.x; // get players interact zone location (I think x is the middle)
+    let y = this._interactZone?.y; // get players interact zone location
     
     if (!x || !y) return;
 
-    switch (this._lastDirection) {
-      case 'front':
-        y += 50;
-        break;
-      case 'left':
-        x -= 30;
-        break;
-      case 'right':
-        x += 30;
-        break;
-      case 'back':
-        y -= 50;
-        break;
-    }
-
-    // Convert world coordinates to tile coordinates
+    // Convert world coordinates units to tile units
     const tileX = Math.floor(x / 16);
     const tileY = Math.floor(y / 16);
 
+    console.log("tileX, tileY", tileX, tileY)
     // Check if tile is in bounds and available for planting
-    const tile = this.gameScene.yamZoneTiles?.[tileY]?.[tileX];
-    if (!tile || tile.yam === true) return;
+    const tile = this.gameScene.yamZoneTiles.find((tile) => tile.x === tileX && tile.y === tileY);
+    if (!tile) {
+      console.log("cant plant here")
+      return;
+    }
+    else if (tile.hasYam) {
+      console.log("already a yam here")
+      return;
+    }
+    
 
     // Center plant on tile
-    const worldX = tileX * 16 + 16 / 2;
-    const worldY = tileY * 16 + 16 / 2;
-
-    console.log("worldX, worldY", worldX, worldY)
+    const worldX = tileX * 16 + 8;
+    const worldY = tileY * 16 + 8;
 
     const yam = new GrownYam(this.gameScene, worldX, worldY, 'seed');
     this.gameScene.growingYams.push(yam);
 
     // Mark tile as used
-    tile.yam = true;
+    tile.hasYam = true;
+    this.gameScene.dataStore.decreaseYams();
   }
 
   public override destroy() {

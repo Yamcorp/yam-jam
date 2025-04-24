@@ -2,6 +2,11 @@ import { NPC } from '../abstracts/NPC';
 import { Game } from '../Game'
 
 export type YamGrowthState = 'seed' | 'sprout' | 'ripe' | 'harvested';
+export type YamTile = {
+  x: number;
+  y: number;
+  hasYam: boolean;
+};
 
 export class GrownYam extends NPC {
   public held = false;
