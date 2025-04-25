@@ -25,7 +25,7 @@ export class Game extends BaseScene
   public create () {
     this._createMap()
     this._camera = this.cameras.main;
-    this._camera.setZoom(2);
+    this._camera.setZoom(4);
 
     this.player = new Player(this, this._map.widthInPixels/ 60 * 51, this._map.heightInPixels / 60 * 13);
 
@@ -117,7 +117,7 @@ export class Game extends BaseScene
   }
 
   private _createMap() {
-    const map = this.make.tilemap({ key: 'tilemap' });
+    const map = this.make.tilemap({ key: 'farm' });
     if (!map) return;
     else this._map = map;
 

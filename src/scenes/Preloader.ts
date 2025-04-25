@@ -34,6 +34,12 @@ export class Preloader extends Scene
 
         this.load.image('logo', 'logo.png');
         this.load.image('tiles', 'atlas.png');
+
+        // this.load.image('farm', 'maps/farm/farm.png');
+        this.load.image('kitchen-items', 'maps/house/kitchen-items.png');
+        this.load.image('kitchen', 'maps/house/kitchen.png');
+        this.load.image('walls', 'maps/house/walls.png');
+        this.load.image('bathroom', 'maps/house/bathroom.png');
         this.load.image('door', 'door.png');
         this.load.image('jrdead', 'jr/jrdead.png')
 
@@ -94,9 +100,9 @@ export class Preloader extends Scene
         this.load.audio("game-over", "/audio/titanic-fail.mp3");
         this.load.audio("fart", "/audio/fart-00.mp3");
 
-        this.load.tilemapTiledJSON('tilemap', 'maps/level.json');
-        this.load.tilemapTiledJSON('house', 'maps/house.json');
-
+        this.load.tilemapTiledJSON('farm', 'maps/farm/level.json');
+        // this.load.tilemapTiledJSON('farm', 'maps/farm/farm.json');
+        this.load.tilemapTiledJSON('house', 'maps/house/house.json');
     }
 
     create ()
@@ -165,6 +171,6 @@ export class Preloader extends Scene
         });
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
-        this.scene.start('MainMenu');
+        this.scene.start('HouseScene');
     }
 }

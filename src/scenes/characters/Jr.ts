@@ -11,6 +11,7 @@ export class Jr extends Phaser.Physics.Arcade.Sprite {
     this._gameScene.add.existing(this)
     this._gameScene.physics.add.existing(this)
     this.anims.play(`jr${state}`, true)
+    this.setScale(0.75)
   }
 
   public get gameScene (): Game {
