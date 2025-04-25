@@ -1,5 +1,5 @@
 import { NPC } from '../abstracts/NPC';
-import { Game } from '../Game'
+import { BaseScene } from '../abstracts/BaseScene';
 
 export type YamGrowthState = 'seed' | 'sprout' | 'ripe' | 'harvested';
 export type YamTile = {
@@ -13,7 +13,7 @@ export class GrownYam extends NPC {
   public growthState: YamGrowthState | undefined;
   private _collider
 
-  constructor(scene: Game, x: number, y: number, growthState: YamGrowthState) {
+  constructor(scene: BaseScene, x: number, y: number, growthState: YamGrowthState) {
     super(scene, 'Yam', 'Yam', x, y, true);
 
     // set initial growthState
@@ -61,7 +61,9 @@ export class GrownYam extends NPC {
       }; break;
       case 'sprout': {
         this.growthState = 'ripe';
-        this._collider = this.scene.physics.add.collider(this.scene.player, this);
+        if (this.gameScene.player) {
+            this._collider = this.scene.physics.add.collider(this.gameScene.player, this);
+        }
         this._updateTexture();
       }; break;
       case 'ripe': {

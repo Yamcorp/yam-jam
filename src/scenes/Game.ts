@@ -7,7 +7,6 @@ export class Game extends BaseScene
 {
   public growingYams: GrownYam[] = [];
   public throwingYams: ThrownYam[] = [];
-  public player: Player | undefined
   public Crows: Crow[] = [];
   private _camera: Phaser.Cameras.Scene2D.Camera | undefined;
   private _collisionLayer!: Phaser.Tilemaps.TilemapLayer

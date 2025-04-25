@@ -1,9 +1,11 @@
 import ClockPlugin from "../../plugins/ClockPlugin";
 import DataStorePlugin from "../../plugins/DataStorePlugin";
+import { Player } from '../characters/Player';
 
 export abstract class BaseScene extends Phaser.Scene {
-  dataStore!: DataStorePlugin
-  clockPlugin!: ClockPlugin;
+  public dataStore!: DataStorePlugin;
+  public clockPlugin!: ClockPlugin;
+  public player: Player | undefined;
 
   constructor(config?: string | Phaser.Types.Scenes.SettingsConfig) {
     super(config);
