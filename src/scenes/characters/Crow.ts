@@ -163,7 +163,6 @@ export class Crow extends Phaser.Physics.Arcade.Sprite {
 
   private _handleMovement() {
     if (!this._flyingSound.isPlaying) {
-      console.warn("CROW SOUND");
       this._flyingSound.play("", { delay: 0.1 });
     }
     let speed: number;
