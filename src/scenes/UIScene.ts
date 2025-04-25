@@ -1,4 +1,4 @@
-import { UPDATE_YAM_COUNT } from "../plugins/DataStorePlugin";
+import { UPDATE_YAM_COUNT, UPDATE_YAM_REQUIRED } from "../plugins/DataStorePlugin";
 import { BaseScene } from "./abstracts/BaseScene";
 
 const WHITE_COLOR = '#ffffff';
@@ -33,6 +33,7 @@ export class UIScene extends BaseScene {
     this._yamRequired.setScrollFactor(0);
 
     this.game.events.on(UPDATE_YAM_COUNT, this.updateYamCount, this);
+    this.game.events.on(UPDATE_YAM_REQUIRED, this.updateYamRequired, this);
   }
 
   public updateYamCount (amount: number) {
@@ -40,6 +41,17 @@ export class UIScene extends BaseScene {
     if (amount < this.dataStore.yamsNeeded) {
       this._yamRequired.setColor(RED_COLOR);
     } else if (amount > this.dataStore.yamsNeeded) {
+      this._yamRequired.setColor(GREEN_COLOR);
+    } else {
+      this._yamRequired.setColor(WHITE_COLOR);
+    }
+  }
+
+  private updateYamRequired (amount: number) {
+    this._yamRequired.setText(`Yams Required: ${amount}`);
+    if (amount > this.dataStore.amountOfYams) {
+      this._yamRequired.setColor(RED_COLOR);
+    } else if (amount < this.dataStore.amountOfYams) {
       this._yamRequired.setColor(GREEN_COLOR);
     } else {
       this._yamRequired.setColor(WHITE_COLOR);
