@@ -7,7 +7,6 @@ export class Game extends BaseScene
 {
   public growingYams: GrownYam[] = [];
   public throwingYams: ThrownYam[] = [];
-  public player: Player | undefined
   public Crows: Crow[] = [];
   private _camera: Phaser.Cameras.Scene2D.Camera | undefined;
   private _collisionLayer!: Phaser.Tilemaps.TilemapLayer
@@ -74,6 +73,7 @@ export class Game extends BaseScene
   public override update (_time: number, _delta: number): void {
     this.player?.update()
     this.Crows.forEach((crow) => crow.update());
+    this.growingYams.forEach((yam) => yam.update());
   }
 
   private _listenForEvents () {
