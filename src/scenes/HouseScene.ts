@@ -1,44 +1,74 @@
-import { Scene, GameObjects } from 'phaser';
-
-export class HouseScene extends Scene
+import { GameObjects } from 'phaser';
+import { BaseScene } from "./abstracts/BaseScene";
+import { Jr } from './characters/Jr'
+import { Player } from './characters/Player';
+export class HouseScene extends BaseScene
 {
-    logo: GameObjects.Image;
-    title: GameObjects.Text;
+    private title!: GameObjects.Text;
+    private _map!: Phaser.Tilemaps.Tilemap
+    private _width!: number
+    private _height!: number
 
-    constructor ()
-    {
+    constructor() {
         super('HouseScene');
     }
 
     create ()
     {
-        this._createMap()
+        this._createMapAndSetCamera()
+        this.cameras.main.setBackgroundColor('black');
 
-        this.title = this.add.text(512, 460, 'House Scene', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        }).setOrigin(0.5);
+        const center = this.cameras.main.getWorldPoint(
+            this.cameras.main.width / 2,
+            this.cameras.main.height / 2
+        );
 
-        this.input.once('pointerdown', () => {
-            this.scene.start('Game');
-        });
+        this.title = this.add.text(
+            center.x,
+            center.y,
+            'Houcene',
+            {
+              fontFamily: 'Arial Black',
+              fontSize: 20,
+              color: '#ffffff',
+              stroke: '#000000',
+              strokeThickness: 4,
+              align: 'center'
+            }
+        );
+
+        this.title.setPosition(center.x, center.y)
+
+
+        const jr = new Jr(this, center.x, center.y + this._width * .1, this.dataStore.jrState)
+        const bori = new Player(this, center.x - this._width * .14, center.y + this._width * .22)
+        bori.setTexture('PlayerWalkBack', 2);
     }
 
-    private _createMap() {
+    private _createMapAndSetCamera() {
         const map = this.make.tilemap({ key: 'house' });
-        if (!map) return;
-    
-        this.physics.world.setBounds(0, 0, map.widthInPixels * 2, map.heightInPixels * 2);
-      
-        const walls = map.addTilesetImage('walls', 'tiles', 16);
-        const kitchen = map.addTilesetImage('kitchen-items', 'tiles', 8);
-        const kitchenFurniture = map.addTilesetImage('kitchen', 'tiles', 16);
-        const bathroom = map.addTilesetImage('bathroom', 'tiles', 16);
+        if (!map) {
+            console.log("No house map")
+            return;
+        } else {
+            this._map = map
+            this._width = map.widthInPixels
+            this._height = map.heightInPixels
+        }
+          
+        const walls = map.addTilesetImage('walls', 'walls');
+        const kitchen = map.addTilesetImage('kitchen-items', 'kitchen-items');
+        const kitchenFurniture = map.addTilesetImage('kitchen', 'kitchen');
+        const bathroom = map.addTilesetImage('bathroom', 'bathroom');
         if (!walls || !kitchen || !kitchenFurniture || !bathroom) return
       
-        map.createLayer('layer1', [walls, kitchen, kitchenFurniture, bathroom], 0, 0);
-        map.createLayer('layer2', [walls, kitchen, kitchenFurniture, bathroom], 0, 0);
-        map.createLayer('layer3', [walls, kitchen, kitchenFurniture, bathroom], 0, 0);
+        const offsetX = (this.cameras.main.width / this.cameras.main.zoom - this._width) / 2;
+        const offsetY = (this.cameras.main.height / this.cameras.main.zoom - this._height) / 2;
+
+        map.createLayer('layer1', [walls, kitchen, kitchenFurniture, bathroom], offsetX, offsetY);
+        map.createLayer('layer2', [walls, kitchen, kitchenFurniture, bathroom], offsetX, offsetY);
+        map.createLayer('layer3', [walls, kitchen, kitchenFurniture, bathroom], offsetX, offsetY);
+
+        this.cameras.main.setZoom(4);
       }
 }
