@@ -73,6 +73,7 @@ export class Game extends BaseScene
   public override update (_time: number, _delta: number): void {
     this.player?.update()
     this.Crows.forEach((crow) => crow.update());
+    this.growingYams.forEach((yam) => yam.update());
   }
 
   private _listenForEvents () {

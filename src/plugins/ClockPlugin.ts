@@ -1,6 +1,6 @@
 import ClockSingleton from "../scenes/Clock";
 
-const CLOCK_CONSTANTS = {
+export const CLOCK_CONSTANTS = {
     CYCLE_LENGTH: 24000,
     DAY_LENGTH: 12000,
     NIGHT_LENGTH: 12000,
