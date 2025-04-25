@@ -132,6 +132,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       }
     }
 
+    // else if by the door, open or close the door
+    if (this.gameScene.door.playerNear) {
+      this.gameScene.door.interact()
+    }
+
     // otherwise if you have a yam in inventory plant one in front of you
     if (this.gameScene.dataStore.amountOfYams > 0) {
       this.plantYam();
