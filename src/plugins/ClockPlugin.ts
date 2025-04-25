@@ -82,7 +82,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
                     this._warningSoundPlayed = false;
                     console.log("🌙Night has fallen!");
 
-                    // TODO: this.startNight();
+                    this.startNight();
                 }
 
                 // Night to Day
@@ -95,7 +95,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
 
                     this._clockSceneSingleton.sound.play("yeet", { volume: 0.5 });
 
-                    // TODO: this.startDay();
+                    this.startDay();
                 }
 
                 // Sunset Warning 3/4 Day
@@ -117,14 +117,14 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
      * this method will simultaneously start the day and end the night cycles
      */
     startDay() {
-        // TODO: begin day cycle
+      this._clockSceneSingleton.scene.stop("NightScene");
     }
 
     /**
      * this method will simultaneously start the night and end the day cycles
      */
     startNight() {
-        // TODO: begin night cycle
+      this._clockSceneSingleton.scene.launch("NightScene");
     }
 
     // --~~~~~~~~~~~~~~~
