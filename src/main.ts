@@ -3,6 +3,7 @@ import { Game as MainGame } from './scenes/Game';
 import { UIScene } from './scenes/UIScene'
 import { GameOver } from './scenes/GameOver';
 import { MainMenu } from './scenes/MainMenu';
+import { NightScene } from './scenes/NightScene';
 import { Preloader } from './scenes/Preloader';
 import DataStorePlugin from './plugins/DataStorePlugin';
 import ClockPlugin from './plugins/ClockPlugin';
@@ -41,7 +42,8 @@ const config: Types.Core.GameConfig = {
         MainMenu,
         MainGame,
         GameOver,
-        UIScene
+        UIScene,
+        NightScene
     ]
 };
 
