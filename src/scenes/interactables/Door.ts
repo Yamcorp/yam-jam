@@ -44,6 +44,7 @@ export class Door extends NPC {
   public interact(): void {
     if (this.playerNear && this.interactZone) {
       console.log("end scene here")
+      this.gameScene.sound.play("fart", { volume: 0.2 });
       // this.toggleDoorOpen()
     }
   }
