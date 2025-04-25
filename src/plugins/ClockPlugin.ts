@@ -1,4 +1,5 @@
 import ClockSingleton from "../scenes/Clock";
+import DataStorePlugin from "./DataStorePlugin";
 
 export const CLOCK_CONSTANTS = {
     CYCLE_LENGTH: 24000,
@@ -123,8 +124,12 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
      * this method will simultaneously start the day and end the night cycles
      */
     startDay() {
-        this._morningSound.play();
-        this._clockSceneSingleton.scene.stop("NightScene");
+      this._morningSound.play();
+      this._clockSceneSingleton.scene.stop("NightScene");
+      const dataStore = this.pluginManager.get('DataStorePlugin') as DataStorePlugin || null;
+      if (dataStore) {
+        dataStore.dayPassed();
+      }
     }
 
     /**

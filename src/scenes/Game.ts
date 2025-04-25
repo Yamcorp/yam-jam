@@ -3,6 +3,7 @@ import { BaseScene } from './abstracts/BaseScene';
 import { Crow } from './characters/Crow';
 import { GrownYam, YamTile } from './interactables/GrownYam';
 import { ThrownYam } from './interactables/ThrownYam';
+import { Door } from './interactables/Door'
 export class Game extends BaseScene
 {
   public growingYams: GrownYam[] = [];
@@ -11,8 +12,9 @@ export class Game extends BaseScene
   private _camera: Phaser.Cameras.Scene2D.Camera | undefined;
   private _collisionLayer!: Phaser.Tilemaps.TilemapLayer
   private _map!: Phaser.Tilemaps.Tilemap
-  private _tileset!: string | Phaser.Tilemaps.Tileset | string[] | Phaser.Tilemaps.Tileset[]
+  public _tileset!: string | Phaser.Tilemaps.Tileset | string[] | Phaser.Tilemaps.Tileset[]
   public yamZoneTiles: YamTile[] = []
+  public door!: Door
 
 
   constructor () {
@@ -33,6 +35,8 @@ export class Game extends BaseScene
     this._registerZones()
     this.cameras.main.setBounds(0, 0, this._map.widthInPixels, this._map.heightInPixels);
     this._camera.startFollow(this.player);
+
+    this.door = new Door(this, 816, 152)
 
     this._initializeYams()
 
@@ -74,6 +78,7 @@ export class Game extends BaseScene
     this.player?.update()
     this.Crows.forEach((crow) => crow.update());
     this.growingYams.forEach((yam) => yam.update());
+    this.door.update()
   }
 
   private _listenForEvents () {

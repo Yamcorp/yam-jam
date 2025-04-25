@@ -102,18 +102,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         case 'front':
           this.setTexture('PlayerWalkFront', 2);
           this._interactZone?.setPosition(this.x, this.y + 24);
-
           break;
         case 'back':
           this.setTexture('PlayerWalkBack', 2);
           this._interactZone?.setPosition(this.x, this.y - 8);
-
           break;
         case 'left':
           this.setTexture('PlayerWalkSide', 4);
+          this._interactZone?.setPosition(this.x - 16, this.y + 8);
           break;
         case 'right':
           this.setTexture('PlayerWalkSide', 4);
+          this._interactZone?.setPosition(this.x + 16, this.y + 8);
           break;
       }
       if (this._isRunSoundPlaying) {
@@ -153,6 +153,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       if (this.harvestYam(yam)) {
         return;
       }
+    }
+
+    // else if by the door, open or close the door
+    if (this.gameScene.door.playerNear) {
+      this.gameScene.door.interact()
     }
 
     // otherwise if you have a yam in inventory plant one in front of you
