@@ -1,8 +1,13 @@
-import { UPDATE_YAM_COUNT } from "../plugins/DataStorePlugin";
+import { UPDATE_YAM_COUNT, UPDATE_YAM_REQUIRED } from "../plugins/DataStorePlugin";
 import { BaseScene } from "./abstracts/BaseScene";
 
+const WHITE_COLOR = '#ffffff';
+const RED_COLOR = '#ff0000';
+const GREEN_COLOR = '#00ff00';
+
 export class UIScene extends BaseScene {
-  private _yam_amount : Phaser.GameObjects.Text;
+  private _yamAmount!: Phaser.GameObjects.Text;
+  private _yamRequired!: Phaser.GameObjects.Text;
 
   constructor() {
     super('UIScene');
@@ -11,18 +16,45 @@ export class UIScene extends BaseScene {
   create () {
     const x = this.cameras.main.width - 10;
     const y = 10;
-    this._yam_amount = this.add.text(x, y, `Yams Remaining: ${this.dataStore.amountOfYams}`, {
-        fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
+    this._yamAmount = this.add.text(x, y, `Yams Remaining: ${this.dataStore.amountOfYams}`, {
+        fontFamily: 'Arial Black', fontSize: 38, color: WHITE_COLOR,
         stroke: '#000000', strokeThickness: 8,
         align: 'center'
     });
-    this._yam_amount.setOrigin(1, 0);
-    this._yam_amount.setScrollFactor(0);
+    this._yamAmount.setOrigin(1, 0);
+    this._yamAmount.setScrollFactor(0);
+
+    this._yamRequired = this.add.text(x, y, `Yams Required: ${this.dataStore.amountOfYams}`, {
+      fontFamily: 'Arial Black', fontSize: 38, color: WHITE_COLOR,
+      stroke: '#000000', strokeThickness: 8,
+      align: 'center'
+    });
+    this._yamRequired.setOrigin(1, -1);
+    this._yamRequired.setScrollFactor(0);
 
     this.game.events.on(UPDATE_YAM_COUNT, this.updateYamCount, this);
+    this.game.events.on(UPDATE_YAM_REQUIRED, this.updateYamRequired, this);
   }
 
   public updateYamCount (amount: number) {
-    this._yam_amount.setText(`Yams Remaining: ${amount}`);
+    this._yamAmount.setText(`Yams Remaining: ${amount}`);
+    if (amount < this.dataStore.yamsNeeded) {
+      this._yamRequired.setColor(RED_COLOR);
+    } else if (amount > this.dataStore.yamsNeeded) {
+      this._yamRequired.setColor(GREEN_COLOR);
+    } else {
+      this._yamRequired.setColor(WHITE_COLOR);
+    }
+  }
+
+  private updateYamRequired (amount: number) {
+    this._yamRequired.setText(`Yams Required: ${amount}`);
+    if (amount > this.dataStore.amountOfYams) {
+      this._yamRequired.setColor(RED_COLOR);
+    } else if (amount < this.dataStore.amountOfYams) {
+      this._yamRequired.setColor(GREEN_COLOR);
+    } else {
+      this._yamRequired.setColor(WHITE_COLOR);
+    }
   }
 }
