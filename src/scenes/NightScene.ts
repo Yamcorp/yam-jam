@@ -6,7 +6,6 @@ export class NightScene extends Phaser.Scene {
   }
 
   create() {
-    console.log('NightScene created');
     const gameWidth = this.scale.width;
     const gameHeight = this.scale.height;
 
