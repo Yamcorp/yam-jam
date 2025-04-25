@@ -10,7 +10,16 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   private _lastDirection: 'front' | 'back' | 'left' | 'right' = 'front';
   private _interactZone!: Phaser.GameObjects.Zone;
 
-  
+  /**
+   * Audio
+   */
+  private _runSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+  private _throwSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+  private _harvestSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+  private _plantSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+  private _isRunSoundPlaying: boolean = false;
+
+
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, 'Player')
 
@@ -39,6 +48,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.add.existing(this._interactZone);
     (this._interactZone.body as Phaser.Physics.Arcade.Body).setAllowGravity(false);
     (this._interactZone.body as Phaser.Physics.Arcade.Body).setImmovable(true);
+
+    this._runSound = this._gameScene.sound.add("running", { volume: 0.35, loop: true });
+    this._throwSound = this._gameScene.sound.add("throw", { volume: 0.3 });
+    this._harvestSound = this._gameScene.sound.add("harvest", { volume: 0.22 });
+    this._plantSound = this._gameScene.sound.add("planting", { volume: 0.20 });
   }
 
   public get gameScene (): Game {
@@ -66,14 +80,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       this._lastDirection = 'right'
       this._interactZone?.setPosition(this.x + 16, this.y + 8);
       moving = true;
-    } 
+    }
     if (this._cursors?.up.isDown || this._wasd?.up.isDown) {
       direction.y -= 1
       animation = 'player-walk-back'
       this._lastDirection = 'back'
       this._interactZone?.setPosition(this.x, this.y - 8);
       moving = true;
-    } 
+    }
     if (this._cursors?.down.isDown || this._wasd?.down.isDown) {
       direction.y += 1
       animation = 'player-walk-front'
@@ -102,13 +116,21 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
           this._interactZone?.setPosition(this.x + 16, this.y + 8);
           break;
       }
+      if (this._isRunSoundPlaying) {
+        this._runSound.stop();
+        this._isRunSoundPlaying = false;
+      }
     } else if (animation) {
       this.anims.play(animation, true)
+      if (!this._isRunSoundPlaying) {
+        this._runSound.play('', { detune: Math.floor(Math.random() * 601) - 300 });
+        this._isRunSoundPlaying = true;
+      }
     }
 
     direction.normalize().scale(this._speed)
     this.setVelocity(direction.x, direction.y)
-    // Use collider to constrain the player 
+    // Use collider to constrain the player
     // to the world's bounds
     this.setCollideWorldBounds(true);
   }
@@ -117,6 +139,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     if (this.gameScene.dataStore.amountOfYams <= 0) {
       return;
     }
+    this._throwSound.play();
     this.gameScene.dataStore.decreaseYams();
     const yam = new ThrownYam(this.gameScene, this.x, this.y);
     this.gameScene.events.emit('addToScene', yam);
@@ -149,6 +172,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       yam.destroy()
       let randomNumber = undefined
       yam.growthState === 'harvested' ? randomNumber = 1 : randomNumber = Math.round(Math.random() * 6);
+      this._harvestSound.play();
       this.gameScene.dataStore.increaseYams(randomNumber);
       return true;
     }
@@ -157,7 +181,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   private plantYam() {
     let x = this._interactZone?.x; // get players interact zone location (I think x is the middle)
     let y = this._interactZone?.y; // get players interact zone location
-    
+
     if (!x || !y) return;
 
     // Convert world coordinates units to tile units
@@ -175,7 +199,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       console.log("already a yam here")
       return;
     }
-    
+
 
     // Center plant on tile
     const worldX = tileX * 16 + 8;
@@ -186,6 +210,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     // Mark tile as used
     tile.hasYam = true;
+    this._plantSound.play();
     this.gameScene.dataStore.decreaseYams();
   }
 
@@ -199,7 +224,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   private growAllYams(): void{
     const unripeYams = this.gameScene.growingYams.filter(
       (yam) => yam.growthState === 'seed' || yam.growthState === 'sprout'
-    ) 
+    )
     unripeYams.forEach((yam) => yam.growYam());
   }
 }

@@ -21,7 +21,7 @@ export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
   public get yamsNeeded () {
     return this._yamsNeeded;
   }
-  
+
   public get day () {
     return this._day;
   }
@@ -29,8 +29,10 @@ export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
   public dayPassed () {
     this._day += 1;
     if (this._yamsNeeded > this._amountOfYams) {
-      this.pluginManager.game.scene.start('GameOver');
-      this.pluginManager.game.scene.stop('Game');
+      // TODO: Game Over Logic, game over sound
+      // this.game.sound.play('game-over', { volume: 0.2 });
+      // this.pluginManager.game.scene.start('GameOver');
+      // this.pluginManager.game.scene.stop('Game');
     } else {
       const amtToChange = Math.max(Math.floor(Math.random() * this._day * 2), this._day);
       const sign = Math.random() < 0.3 ? -1 : 1;

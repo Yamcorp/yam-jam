@@ -13,6 +13,12 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     private _clockSceneSingleton!: Phaser.Scene;
     private _isDay: boolean = true;
     private _isNight: boolean = false;
+
+    /**
+     * Audio
+     */
+    private _morningSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+    private _nightSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
     private _warningSoundPlayed: boolean = false;
 
     constructor(pluginManager: Phaser.Plugins.PluginManager) {
@@ -35,6 +41,9 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
             return;
         }
 
+        this._morningSound = this._clockSceneSingleton.sound.add("morning", { volume: 0.08 });
+        this._nightSound = this._clockSceneSingleton.sound.add("night", { volume: 0.07 });
+
         if (this._clockSceneSingleton.sys.isActive()) {
           console.log("Clock Singleton is active! \n --starting logger--");
             this.gameClock = this._clockSceneSingleton.time;
@@ -44,8 +53,6 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
             console.warn("Clock Singleton not active! \n --waiting for it to emit ready--");
             this._clockSceneSingleton.events.once("ready", () => this.startDayNightCycle());
         }
-
-
     }
 
     // TODO: Not sure about these impl. details...
@@ -54,7 +61,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
         this.destroy();
     }
 
-    // -----------------------------------------------------
+    // -----------------------------------------------------s
     //#endregion Lifecycle ---------------------------------
 
     // -----------------------------------------------------
@@ -66,6 +73,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     // --~~~~~~~~~~~~~~~
 
     startDayNightCycle(): void {
+        this._morningSound.play();
         this.gameClock.addEvent({
             delay: 3000,
             loop: true,
@@ -81,6 +89,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
                     this._isDay = false;
                     this._isNight = true;
                     this._warningSoundPlayed = false;
+
                     console.log("🌙Night has fallen!");
 
                     this.startNight();
@@ -94,8 +103,6 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
                     this._warningSoundPlayed = false;
                     console.log("☀️Day has broken!🐤");
 
-                    this._clockSceneSingleton.sound.play("yeet", { volume: 0.5 });
-
                     this.startDay();
                 }
 
@@ -106,8 +113,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
                     this._clockSceneSingleton.events.emit("sunsetWarning");
                     console.log("🌅Sunset warning!");
 
-                    // TODO: play warning sound
-                    this._clockSceneSingleton.sound.play("fart-00", { volume: 0.5 });
+                    // this._clockSceneSingleton.sound.play("sunset", { volume: 0.25 });
                     this._warningSoundPlayed = true;
                 }
             },
@@ -118,10 +124,11 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
      * this method will simultaneously start the day and end the night cycles
      */
     startDay() {
+      this._morningSound.play();
       this._clockSceneSingleton.scene.stop("NightScene");
       const dataStore = this.pluginManager.get('DataStorePlugin') as DataStorePlugin || null;
       if (dataStore) {
-        dataStore.dayPassed();  
+        dataStore.dayPassed();
       }
     }
 
@@ -129,7 +136,8 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
      * this method will simultaneously start the night and end the day cycles
      */
     startNight() {
-      this._clockSceneSingleton.scene.launch("NightScene");
+        this._nightSound.play();
+        this._clockSceneSingleton.scene.launch("NightScene");
     }
 
     // --~~~~~~~~~~~~~~~
