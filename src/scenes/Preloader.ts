@@ -65,6 +65,10 @@ export class Preloader extends Scene
 
         this.load.image('tiles', 'atlas.png');
         this.load.tilemapTiledJSON('tilemap', 'level.json');
+
+        this.load.image('door', 'door.png');
+
+
     }
 
     create ()
