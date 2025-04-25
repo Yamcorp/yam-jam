@@ -60,11 +60,15 @@ export class Preloader extends Scene
             frameHeight: 20,
         });
 
-        this.load.audio("fart-00", "/audio/fart-00.mp3");
-        this.load.audio("yeet", "/audio/yeet.mp3");
-        this.load.audio("running-00", "/audio/running-00.mp3");
+        this.load.audio("sunset", "/audio/tok-tok-tok.mp3");
+        this.load.audio("morning", "/audio/amogus-00.mp3");
+        this.load.audio("running", "/audio/walking-00.mp3");
         this.load.audio("throw", "/audio/pull-00.mp3")
         this.load.audio("crow-hit", "/audio/quack.mp3");
+        this.load.audio("harvest", "/audio/pull-01.mp3");
+        this.load.audio("night", "/audio/crickets.mp3");
+        this.load.audio("crow", "/audio/crow-03.mp3");
+        this.load.audio("planting", "/audio/bamboo-hit.mp3");
 
         this.load.image('tiles', 'atlas.png');
         this.load.tilemapTiledJSON('tilemap', 'level.json');

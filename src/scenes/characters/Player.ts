@@ -13,9 +13,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   /**
    * Audio
    */
-  private _runningSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+  private _runSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
   private _throwSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
-  private _isRunningSoundPlaying: boolean = false;
+  private _harvestSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+  private _plantSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+  private _isRunSoundPlaying: boolean = false;
 
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -47,8 +49,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     (this._interactZone.body as Phaser.Physics.Arcade.Body).setAllowGravity(false);
     (this._interactZone.body as Phaser.Physics.Arcade.Body).setImmovable(true);
 
-    this._runningSound = this._gameScene.sound.add("running-00", { volume: 0.2, loop: true });
+    this._runSound = this._gameScene.sound.add("running", { volume: 0.35, loop: true });
     this._throwSound = this._gameScene.sound.add("throw", { volume: 0.3 });
+    this._harvestSound = this._gameScene.sound.add("harvest", { volume: 0.25 });
+    this._plantSound = this._gameScene.sound.add("planting", { volume: 0.25 });
   }
 
   public get gameScene (): Game {
@@ -112,15 +116,15 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
           this.setTexture('PlayerWalkSide', 4);
           break;
       }
-      if (this._isRunningSoundPlaying) {
-        this._runningSound.stop();
-        this._isRunningSoundPlaying = false;
+      if (this._isRunSoundPlaying) {
+        this._runSound.stop();
+        this._isRunSoundPlaying = false;
       }
     } else if (animation) {
       this.anims.play(animation, true)
-      if (!this._isRunningSoundPlaying) {
-        this._runningSound.play();
-        this._isRunningSoundPlaying = true;
+      if (!this._isRunSoundPlaying) {
+        this._runSound.play('', { detune: Math.floor(Math.random() * 601) - 300 });
+        this._isRunSoundPlaying = true;
       }
     }
 
@@ -163,7 +167,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       yam.destroy()
       let randomNumber = undefined
       yam.growthState === 'harvested' ? randomNumber = 1 : randomNumber = Math.round(Math.random() * 6);
-      // TODO: cw
+      this._harvestSound.play();
       this.gameScene.dataStore.increaseYams(randomNumber);
       return true;
     }
@@ -201,6 +205,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     // Mark tile as used
     tile.hasYam = true;
+    this._plantSound.play();
     this.gameScene.dataStore.decreaseYams();
   }
 
