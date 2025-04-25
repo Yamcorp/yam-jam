@@ -14,6 +14,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
    * Audio
    */
   private _runningSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+  private _throwSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
   private _isRunningSoundPlaying: boolean = false;
 
 
@@ -47,6 +48,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     (this._interactZone.body as Phaser.Physics.Arcade.Body).setImmovable(true);
 
     this._runningSound = this._gameScene.sound.add("running-00", { volume: 0.2, loop: true });
+    this._throwSound = this._gameScene.sound.add("throw", { volume: 0.3 });
   }
 
   public get gameScene (): Game {
@@ -133,6 +135,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     if (this.gameScene.dataStore.amountOfYams <= 0) {
       return;
     }
+    this._throwSound.play();
     this.gameScene.dataStore.decreaseYams();
     const yam = new ThrownYam(this.gameScene, this.x, this.y);
     this.gameScene.events.emit('addToScene', yam);
@@ -160,6 +163,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       yam.destroy()
       let randomNumber = undefined
       yam.growthState === 'harvested' ? randomNumber = 1 : randomNumber = Math.round(Math.random() * 6);
+      // TODO: cw
       this.gameScene.dataStore.increaseYams(randomNumber);
       return true;
     }
