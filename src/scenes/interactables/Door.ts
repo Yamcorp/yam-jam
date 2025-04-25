@@ -5,12 +5,15 @@ export class Door extends NPC {
   public transitionZone: Phaser.GameObjects.Zone | undefined;
   public interactZone: Phaser.GameObjects.Zone | undefined;
   public playerNear: boolean = false;
+  private isDoorOpen = false;
+  // private openDoorSprite;
 
   constructor(scene: Game, x: number, y: number) {
     super(scene, undefined, "Door", x, y, true);
+    this.setVisible(false); // Make door invisible
 
     // Create interaction zone
-    this.interactZone = scene.add.zone(x, y, 16, 16);
+    this.interactZone = scene.add.zone(x, y, 32, 16);
     scene.physics.add.existing(this.interactZone, true);
 
     // Enable overlap detection
@@ -21,6 +24,8 @@ export class Door extends NPC {
       undefined,
       this
     );
+
+  //  this._makeSprite(); // make open door sprite
   }
 
   public override update(): void {
@@ -37,13 +42,32 @@ export class Door extends NPC {
   }
 
   public interact(): void {
-    if (this.playerNear) {
-      console.log('Interacted with door');
+    if (this.playerNear && this.interactZone) {
+      console.log("end scene here")
+      // this.toggleDoorOpen()
     }
   }
 
   public override destroy(): void {
     this.gameScene.events.emit('removeFromScene', this);
     super.destroy();
+  }
+
+  private _makeSprite() {
+    const { x, y } = this.interactZone!;
+    this.gameScene.add.sprite(x, y-24, 'door');
+    this.gameScene.player.setDepth(0)
+  }
+
+  private toggleDoorOpen() {
+    // close door
+    if (this.openDoorSprite && this.isDoorOpen) {
+      this.openDoorSprite.setVisible(false)
+      this.gameScene.player.setDepth(0)
+      // open door
+    } else {
+      this.isDoorOpen = true
+      this.gameScene.player.setDepth(1)
+    }
   }
 }

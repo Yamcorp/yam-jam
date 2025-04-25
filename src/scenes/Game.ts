@@ -12,7 +12,7 @@ export class Game extends BaseScene
   private _camera: Phaser.Cameras.Scene2D.Camera | undefined;
   private _collisionLayer!: Phaser.Tilemaps.TilemapLayer
   private _map!: Phaser.Tilemaps.Tilemap
-  private _tileset!: string | Phaser.Tilemaps.Tileset | string[] | Phaser.Tilemaps.Tileset[]
+  public _tileset!: string | Phaser.Tilemaps.Tileset | string[] | Phaser.Tilemaps.Tileset[]
   public yamZoneTiles: YamTile[] = []
   public door!: Door
 
@@ -36,7 +36,7 @@ export class Game extends BaseScene
     this.cameras.main.setBounds(0, 0, this._map.widthInPixels, this._map.heightInPixels);
     this._camera.startFollow(this.player);
 
-    this.door = new Door(this, 800, 160)
+    this.door = new Door(this, 816, 152)
 
     this._initializeYams()
 
