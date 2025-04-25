@@ -5,7 +5,7 @@ import { Player } from '../characters/Player';
 export abstract class BaseScene extends Phaser.Scene {
   public dataStore!: DataStorePlugin;
   public clockPlugin!: ClockPlugin;
-  public player: Player | undefined;
+  public player!: Player;
 
   constructor(config?: string | Phaser.Types.Scenes.SettingsConfig) {
     super(config);
