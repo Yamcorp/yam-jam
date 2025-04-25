@@ -25,7 +25,7 @@ export class Game extends BaseScene
   public create () {
     this._createMap()
     this._camera = this.cameras.main;
-    this._camera.setZoom(4);
+    this._camera.setZoom(2);
 
     this.player = new Player(this, this._map.widthInPixels/ 60 * 51, this._map.heightInPixels / 60 * 13);
 
@@ -41,12 +41,12 @@ export class Game extends BaseScene
 
     this._initializeYams()
 
-    new Jr(this, 816, 350, 0)
-    new Jr(this, 784, 350, 1)
-    new Jr(this, 752, 350, 2)
-    new Jr(this, 720, 350, 3)
-    new Jr(this, 688, 350, 4)
-    new Jr(this, 656, 350, 5)
+    // new Jr(this, 816, 350, 0)
+    // new Jr(this, 784, 350, 1)
+    // new Jr(this, 752, 350, 2)
+    // new Jr(this, 720, 350, 3)
+    // new Jr(this, 688, 350, 4)
+    // new Jr(this, 656, 350, 5)
 
     // Function to spawn a Crow every 2 seconds
     //  Add the new Crow to the scene and the Crows array
