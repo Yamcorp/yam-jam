@@ -1,9 +1,8 @@
 import { Player } from './characters/Player';
 import { BaseScene } from './abstracts/BaseScene';
 import { Crow } from './characters/Crow';
-import { GrownYam } from './interactables/GrownYam';
+import { GrownYam, YamTile } from './interactables/GrownYam';
 import { ThrownYam } from './interactables/ThrownYam';
-
 export class Game extends BaseScene
 {
   public growingYams: GrownYam[] = [];
@@ -11,34 +10,32 @@ export class Game extends BaseScene
   public player: Player | undefined
   public Crows: Crow[] = [];
   private _camera: Phaser.Cameras.Scene2D.Camera | undefined;
-  private _background: Phaser.GameObjects.Image | undefined;
-  private _worldWidth = 1024;
-  private _worldHeight = 1024;
+  private _collisionLayer!: Phaser.Tilemaps.TilemapLayer
+  private _map!: Phaser.Tilemaps.Tilemap
+  private _tileset!: string | Phaser.Tilemaps.Tileset | string[] | Phaser.Tilemaps.Tileset[]
+  public yamZoneTiles: YamTile[] = []
+
 
   constructor () {
     super('Game');
   }
 
   public create () {
-    this.cameras.main.setBounds(0, 0, this._worldWidth, this._worldHeight);
+    this._createMap()
     this._camera = this.cameras.main;
-    this._camera.setBackgroundColor(0x00ff00);
-    
-    this.physics.world.setBounds(0, 0, this._worldWidth, this._worldHeight);
-    
-    this._background = this.add.image(512, 384, 'background');
-    this._background.setAlpha(0.5);
+    this._camera.setZoom(2);
 
-    this.player = new Player(this, this.physics.world.bounds.width / 2, this.physics.world.bounds.height / 2);
+    this.player = new Player(this, this._map.widthInPixels/ 60 * 51, this._map.heightInPixels / 60 * 13);
+
+    this.player.setBodySize(this.player.width / 2, this.player.height / 2); // set hitbox dimensions
+    this.player.setOffset(this.player.width / 4, this.player.height / 2); 
+    
+    this._map.createLayer('top layer', this._tileset, 0, 0);
+    this._registerZones()
+    this.cameras.main.setBounds(0, 0, this._map.widthInPixels, this._map.heightInPixels);
     this._camera.startFollow(this.player);
 
-    // Spawn a bunch of yams randomly
-    for (let i = 0; i < Phaser.Math.Between(5, 10); i++) {
-      const x = Phaser.Math.Between(0, this.physics.world.bounds.width);
-      const y = Phaser.Math.Between(0, this.physics.world.bounds.height);
-      const yam = new GrownYam(this, x, y, 'ripe');
-      this.growingYams.push(yam);
-    }
+    this._initializeYams()
 
     // Function to spawn a Crow every 2 seconds
     //  Add the new Crow to the scene and the Crows array
@@ -104,5 +101,69 @@ export class Game extends BaseScene
         });
       }
     });
+  }
+
+  private _createMap() {
+    const map = this.make.tilemap({ key: 'tilemap' });
+    if (!map) return;
+    else this._map = map;
+
+    this.physics.world.setBounds(0, 0, map.widthInPixels * 2, map.heightInPixels * 2);
+  
+    const tileset = map.addTilesetImage('atlas', 'tiles');
+    if (!tileset) return
+    else this._tileset = tileset
+  
+    map.createLayer('ground layer', tileset, 0, 0);
+    map.createLayer('world layer', tileset, 0, 0);
+    map.createLayer('world layer 2', tileset, 0, 0);
+  }
+
+  private _registerZones() {
+    const collisionLayer = this._map.createLayer('collision', this._tileset, 0, 0);
+    if (!collisionLayer) return;
+  
+    collisionLayer.setCollision([1768]);
+    collisionLayer.setVisible(false); // Hide layer
+  
+    this._collisionLayer = collisionLayer;
+  
+    if (this.player) {
+      this.physics.add.collider(this.player, this._collisionLayer);
+    }
+  }
+
+  private _initializeYams() {
+    // Spawn a bunch of yams randomly
+
+    const yamZoneLayer = this._map.createLayer('yam zone', this._tileset, 0, 0);
+    if (!yamZoneLayer) {
+      console.log("yamZoneLayer error loading")
+      return
+    }
+    yamZoneLayer.setVisible(false); // Hide layer
+
+    // UNCOMMENT TO SEE YAMZONE LAYER (AND UNCOMMENT GRAPHICS STROKE BELLOW)
+    // const graphics = this.add.graphics({ lineStyle: { width: 1, color: 0xff0000 } });
+    yamZoneLayer.forEachTile((tile) => {
+      if (tile.index === 1768) {
+        const tileX = tile.getLeft() / 16; // Tile X-index in the world map
+        const tileY = tile.getTop() / 16; // Tile Y-index in the world map
+        
+        // UNCOMMENT TO SEE YAMZONE LAYER (AND UNCOMMENT GRAPHICS DECLARATION ABOVE)
+        // graphics.strokeRect(tile.getCenterX() - (tile.width / 2), tile.getCenterY() - (tile.height / 2), tile.width, tile.height);
+
+        this.yamZoneTiles.push({ x: tileX, y: tileY, hasYam: false });
+      }
+    });
+
+    const spawnCount = 7;
+    for (let i = 0; i < spawnCount && this.yamZoneTiles.length > 0; i++) {
+
+      const tile = Phaser.Utils.Array.GetRandom(this.yamZoneTiles);
+      tile.hasYam = true
+      const yam = new GrownYam(this, tile.x * 16 + 8, tile.y * 16 + 8, 'ripe');
+      this.growingYams.push(yam);
+    }
   }
 }

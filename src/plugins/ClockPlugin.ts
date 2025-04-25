@@ -35,8 +35,10 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
         }
 
         if (this._clockSceneSingleton.sys.isActive()) {
+          console.log("Clock Singleton is active! \n --starting logger--");
             this.gameClock = this._clockSceneSingleton.time;
             this.startDayNightCycle();
+            // this.startLogger();
         } else {
             console.warn("Clock Singleton not active! \n --waiting for it to emit ready--");
             this._clockSceneSingleton.events.once("ready", () => this.startDayNightCycle());
