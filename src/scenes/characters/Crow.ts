@@ -9,18 +9,30 @@ export class Crow extends Phaser.Physics.Arcade.Sprite {
   private _wobbleOffset: number = 0;
   public crowSpeed: CrowSpeed;
   private _heldYam: GrownYam | null | undefined;
-  private _shadow: Phaser.GameObjects.Graphics; 
+  private _shadow: Phaser.GameObjects.Graphics;
   public isOverYam: boolean = false;
   private _gameScene: Game
 
+  /**
+   * Audio
+   */
+  private _deathSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+  private _flyingSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
 
+  /**
+   * Crow Constructor
+   * @param scene
+   * @param x
+   * @param y
+   * @param speed
+   */
   constructor(scene: BaseScene, x: number, y: number, speed: CrowSpeed | undefined = undefined) {
     super(scene, x, y, 'Crow');
     this.setScale(0.5)
     this._gameScene = scene as Game
     scene.add.existing(this);
     scene.physics.add.existing(this);
-    
+
     if (!speed) {
       const speeds: CrowSpeed[] = ['slow', 'medium', 'fast'];
       speed = speeds[Phaser.Math.Between(0, speeds.length - 1)];
@@ -81,8 +93,15 @@ export class Crow extends Phaser.Physics.Arcade.Sprite {
 
     // Initially position the shadow
     this.updateShadowPosition();
+    this._deathSound = this._gameScene.sound.add("crow-hit", { volume: 0.10, loop: false });
+    this._flyingSound = this._gameScene.sound.add("crow", {
+      volume: 0.25,
+      loop: true,
+      detune: (Math.floor(Math.random() * 601) - 300),
+      source: { follow: this }
+    });
   }
-  
+
   public interact () {
     this.dropYam();
     this.scene.events.emit("removeFromScene", this)
@@ -98,6 +117,9 @@ export class Crow extends Phaser.Physics.Arcade.Sprite {
     if (this._shadow) {
       this._shadow.destroy();
     }
+    this._flyingSound.stop();
+    this._flyingSound.destroy();
+    this._deathSound.play();
     this.scene.events.emit("removeFromScene", this)
     super.destroy();
   }
@@ -120,7 +142,7 @@ export class Crow extends Phaser.Physics.Arcade.Sprite {
       }
     }
   }
-  
+
   public grabYam (yam: GrownYam) {
     if (yam.growthState === 'ripe' || yam.growthState === 'harvested') {
       this._heldYam = yam;
@@ -140,6 +162,9 @@ export class Crow extends Phaser.Physics.Arcade.Sprite {
   }
 
   private _handleMovement() {
+    if (!this._flyingSound.isPlaying) {
+      this._flyingSound.play("", { delay: 0.1 });
+    }
     let speed: number;
     switch (this.crowSpeed) {
       case 'fast': speed = Phaser.Math.Between(120, 170); break;
@@ -213,8 +238,8 @@ export class Crow extends Phaser.Physics.Arcade.Sprite {
 
       this.setSpriteDirection(velocityX)
       } else {
-        const angle = Math.atan2(distanceY, distanceX) + Math.PI / 2; 
-        const orbitSpeed = 25; 
+        const angle = Math.atan2(distanceY, distanceX) + Math.PI / 2;
+        const orbitSpeed = 25;
         velocityX = Math.cos(angle) * orbitSpeed;
         velocityY = Math.sin(angle) * orbitSpeed;
         this.setSpriteDirection(velocityX)
