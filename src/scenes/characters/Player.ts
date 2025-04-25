@@ -13,6 +13,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   /**
    * Audio
    */
+  private _runningSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
   private _isRunningSoundPlaying: boolean = false;
 
 
@@ -44,6 +45,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene.physics.add.existing(this._interactZone);
     (this._interactZone.body as Phaser.Physics.Arcade.Body).setAllowGravity(false);
     (this._interactZone.body as Phaser.Physics.Arcade.Body).setImmovable(true);
+
+    this._runningSound = this._gameScene.sound.add("running-00", { volume: 0.2, loop: true });
   }
 
   public get gameScene (): Game {
@@ -108,13 +111,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
           break;
       }
       if (this._isRunningSoundPlaying) {
-        this._gameScene.sound.stopByKey("running-00");
+        this._runningSound.stop();
         this._isRunningSoundPlaying = false;
       }
     } else if (animation) {
       this.anims.play(animation, true)
       if (!this._isRunningSoundPlaying) {
-        this._gameScene.sound.play("running-00", { volume: 0.2, loop: true });
+        this._runningSound.play();
         this._isRunningSoundPlaying = true;
       }
     }
