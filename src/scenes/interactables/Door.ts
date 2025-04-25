@@ -45,6 +45,7 @@ export class Door extends NPC {
     if (this.playerNear && this.interactZone) {
       console.log("end scene here")
       this.gameScene.sound.play("fart", { volume: 0.2 });
+      this.gameScene.scene.start('HouseScene');
       // this.toggleDoorOpen()
     }
   }
@@ -54,21 +55,21 @@ export class Door extends NPC {
     super.destroy();
   }
 
-  private _makeSprite() {
-    const { x, y } = this.interactZone!;
-    this.gameScene.add.sprite(x, y-24, 'door');
-    this.gameScene.player.setDepth(0)
-  }
+  // private _makeSprite() {
+  //   const { x, y } = this.interactZone!;
+  //   this.gameScene.add.sprite(x, y-24, 'door');
+  //   this.gameScene.player.setDepth(0)
+  // }
 
-  private toggleDoorOpen() {
-    // close door
-    if (this.openDoorSprite && this.isDoorOpen) {
-      this.openDoorSprite.setVisible(false)
-      this.gameScene.player.setDepth(0)
-      // open door
-    } else {
-      this.isDoorOpen = true
-      this.gameScene.player.setDepth(1)
-    }
-  }
+  // private toggleDoorOpen() {
+  //   // close door
+  //   if (this.openDoorSprite && this.isDoorOpen) {
+  //     this.openDoorSprite.setVisible(false)
+  //     this.gameScene.player.setDepth(0)
+  //     // open door
+  //   } else {
+  //     this.isDoorOpen = true
+  //     this.gameScene.player.setDepth(1)
+  //   }
+  // }
 }
