@@ -1,7 +1,18 @@
+import ClockSingleton from "../scenes/Clock";
+
+const CLOCK_CONSTANTS = {
+    CYCLE_LENGTH: 24000,
+    DAY_LENGTH: 12000,
+    NIGHT_LENGTH: 12000,
+    SUNSET_WARNING: 9000
+};
+
 export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
-    private clockSceneSingleton!: Phaser.Scene;
-    private clock!: Phaser.Time.Clock;
-    // TODO: define private variables like time events and time scale
+    public gameClock!: Phaser.Time.Clock;
+    private _clockSceneSingleton!: Phaser.Scene;
+    private _isDay: boolean = true;
+    private _isNight: boolean = false;
+    private _warningSoundPlayed: boolean = false;
 
     constructor(pluginManager: Phaser.Plugins.PluginManager) {
         super(pluginManager);
@@ -12,25 +23,23 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     // -----------------------------------------------------
 
     override init(): void {
-        // TODO: maybe start the clock here? (else it starts at main menu)
         console.log("ClockPlugin initialized");
+        this.game.scene.add("ClockSingleton", new ClockSingleton());
+        this._clockSceneSingleton = this.pluginManager.game.scene.getScene("ClockSingleton");
     }
 
     override start(): void {
-        console.log("~~clock plugin started~~");
-        this.clockSceneSingleton = this.pluginManager.game.scene.getScene("ClockSingleton");
-
-        if (!this.clockSceneSingleton) {
+        if (!this._clockSceneSingleton) {
             console.error("ClockSingleton scene not found!");
             return;
         }
 
-        if (this.clockSceneSingleton.sys.isActive()) {
-            console.log("Clock Singleton is active! \n --starting logger--");
-            this.startLogger();
+        if (this._clockSceneSingleton.sys.isActive()) {
+            this.gameClock = this._clockSceneSingleton.time;
+            this.startDayNightCycle();
         } else {
             console.warn("Clock Singleton not active! \n --waiting for it to emit ready--");
-            this.clockSceneSingleton.events.once("ready", () => this.startLogger());
+            this._clockSceneSingleton.events.once("ready", () => this.startDayNightCycle());
         }
 
 
@@ -49,47 +58,55 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     //#region Public API -----------------------------------
     // -----------------------------------------------------
 
-    getTime(): number {
-        return this.clock.now;
-    }
+    // --~~~~~~~~~~~~~~~
+    // -- Events --------
+    // --~~~~~~~~~~~~~~~
 
-    getElapsedTime(): number {
-        return this.clock.startTime - this.clock.now;
-    }
-
-    pauseTime(): void {
-        this.clock.paused = true;
-    }
-
-    resumeTime(): void {
-        this.clock.paused = false;
-    }
-
-    scheduleOnce(delay: number, callback: () => void) {
-        this.clock.delayedCall(delay, callback);
-    }
-
-    pauseAllEvents() {
-        this.clock.paused = true;
-    }
-
-    resumeAllEvents() {
-        this.clock.paused = false;
-    }
-
-    /**
-     * this is a test method to log the clock ticks to the console
-     */
-    startLogger() {
-        this.clock = this.clockSceneSingleton.time;
-        console.dir(this.clock);
-
-        this.clock.addEvent({
-            delay: 2000,
+    startDayNightCycle(): void {
+        this.gameClock.addEvent({
+            delay: 3000,
             loop: true,
             callback: () => {
-                console.log(`Global Clock Tick : @ ${this.clock.now} \n Elapsed: ${this.getElapsedTime().toFixed(1)}`);
-                console.dir(this.clock);
+                const timeInCycle = this.getTimeInCycle();
+                // logs
+                console.log(`Time in cycle: ${timeInCycle}`);
+                console.log(`Elapsed Time: ${this.getElapsedTime()}`);
+
+                // Day to Night
+                if (timeInCycle >= CLOCK_CONSTANTS.DAY_LENGTH && this._isDay) {
+                    this._clockSceneSingleton.events.emit("dayCycleEnd");
+                    this._isDay = false;
+                    this._isNight = true;
+                    this._warningSoundPlayed = false;
+                    console.log("🌙Night has fallen!");
+
+                    // TODO: this.startNight();
+                }
+
+                // Night to Day
+                if (timeInCycle < CLOCK_CONSTANTS.DAY_LENGTH && this._isNight) {
+                    this._clockSceneSingleton.events.emit("nightCycleEnd");
+                    this._isDay = true;
+                    this._isNight = false;
+                    this._warningSoundPlayed = false;
+                    console.log("☀️Day has broken!🐤");
+
+                    this._clockSceneSingleton.sound.play("yeet", { volume: 0.5 });
+
+                    // TODO: this.startDay();
+                }
+
+                // Sunset Warning 3/4 Day
+                if (timeInCycle >= CLOCK_CONSTANTS.SUNSET_WARNING
+                    && timeInCycle < CLOCK_CONSTANTS.DAY_LENGTH
+                    && this._isDay && !this._isNight) {
+                    this._clockSceneSingleton.events.emit("sunsetWarning");
+                    console.log("🌅Sunset warning!");
+
+                    // TODO: play warning sound
+                    this._clockSceneSingleton.sound.play("fart-00", { volume: 0.5 });
+                    this._warningSoundPlayed = true;
+                }
             },
         });
     }
@@ -106,6 +123,42 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
      */
     startNight() {
         // TODO: begin night cycle
+    }
+
+    // --~~~~~~~~~~~~~~~
+    // -- Utility -------
+    // --~~~~~~~~~~~~~~~
+
+    public getTime(): number {
+        return this.gameClock.now;
+    }
+
+    getElapsedTime(): number {
+        return Math.floor(this.gameClock.now - this.gameClock.startTime);
+    }
+
+    getTimeInCycle(): number {
+        return this.getElapsedTime() % CLOCK_CONSTANTS.CYCLE_LENGTH;
+    }
+
+    pauseTime(): void {
+        this.gameClock.paused = true;
+    }
+
+    resumeTime(): void {
+        this.gameClock.paused = false;
+    }
+
+    scheduleOnce(delay: number, callback: () => void) {
+        this.gameClock.delayedCall(delay, callback);
+    }
+
+    pauseAllEvents() {
+        this.gameClock.paused = true;
+    }
+
+    resumeAllEvents() {
+        this.gameClock.paused = false;
     }
 
     // -----------------------------------------------------
