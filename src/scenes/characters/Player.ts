@@ -88,18 +88,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         case 'front':
           this.setTexture('PlayerWalkFront', 2);
           this._interactZone?.setPosition(this.x, this.y + 24);
-
           break;
         case 'back':
           this.setTexture('PlayerWalkBack', 2);
           this._interactZone?.setPosition(this.x, this.y - 8);
-
           break;
         case 'left':
           this.setTexture('PlayerWalkSide', 4);
+          this._interactZone?.setPosition(this.x - 16, this.y + 8);
           break;
         case 'right':
           this.setTexture('PlayerWalkSide', 4);
+          this._interactZone?.setPosition(this.x + 16, this.y + 8);
           break;
       }
     } else if (animation) {
