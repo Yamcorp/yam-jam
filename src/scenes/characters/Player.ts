@@ -51,8 +51,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     this._runSound = this._gameScene.sound.add("running", { volume: 0.35, loop: true });
     this._throwSound = this._gameScene.sound.add("throw", { volume: 0.3 });
-    this._harvestSound = this._gameScene.sound.add("harvest", { volume: 0.25 });
-    this._plantSound = this._gameScene.sound.add("planting", { volume: 0.25 });
+    this._harvestSound = this._gameScene.sound.add("harvest", { volume: 0.22 });
+    this._plantSound = this._gameScene.sound.add("planting", { volume: 0.20 });
   }
 
   public get gameScene (): Game {

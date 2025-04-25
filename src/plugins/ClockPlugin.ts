@@ -40,8 +40,8 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
             return;
         }
 
-        this._morningSound = this._clockSceneSingleton.sound.add("morning", { volume: 0.10 });
-        this._nightSound = this._clockSceneSingleton.sound.add("night", { volume: 0.10 });
+        this._morningSound = this._clockSceneSingleton.sound.add("morning", { volume: 0.08 });
+        this._nightSound = this._clockSceneSingleton.sound.add("night", { volume: 0.07 });
 
         if (this._clockSceneSingleton.sys.isActive()) {
           console.log("Clock Singleton is active! \n --starting logger--");

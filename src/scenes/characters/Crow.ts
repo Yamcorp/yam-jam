@@ -93,7 +93,7 @@ export class Crow extends Phaser.Physics.Arcade.Sprite {
 
     // Initially position the shadow
     this.updateShadowPosition();
-    this._deathSound = this._gameScene.sound.add("crow-hit", { volume: 0.17, loop: false });
+    this._deathSound = this._gameScene.sound.add("crow-hit", { volume: 0.10, loop: false });
     this._flyingSound = this._gameScene.sound.add("crow", {
       volume: 0.25,
       loop: true,
