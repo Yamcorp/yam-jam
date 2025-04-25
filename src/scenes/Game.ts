@@ -32,6 +32,7 @@ export class Game extends BaseScene
     
     this._map.createLayer('top layer', this._tileset, 0, 0);
     this._registerZones()
+    this.cameras.main.setBounds(0, 0, this._map.widthInPixels, this._map.heightInPixels);
     this._camera.startFollow(this.player);
 
     this._initializeYams()
