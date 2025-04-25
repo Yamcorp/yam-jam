@@ -9,6 +9,7 @@ export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
   public _amountOfYams = 10;
   private _yamsNeeded = startingRequiredYams;
   private _day = 1;
+  private _jrState = 5;
 
   constructor(pluginManager: Phaser.Plugins.PluginManager) {
     super(pluginManager);
@@ -24,6 +25,10 @@ export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
 
   public get day () {
     return this._day;
+  }
+
+  public get jrState () {
+    return this._jrState;
   }
 
   public dayPassed () {
@@ -51,5 +56,9 @@ export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
   increaseYams (amount = 1) {
     this._amountOfYams += amount;
     this.game.events.emit(UPDATE_YAM_COUNT, this._amountOfYams);
+  }
+
+  decreaseJrHealth () {
+    this._jrState -= 1;
   }
 }
