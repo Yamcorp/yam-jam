@@ -70,6 +70,7 @@ export class Preloader extends Scene
         this.load.audio("crow", "/audio/crow-03.mp3");
         this.load.audio("planting", "/audio/bamboo-hit.mp3");
         this.load.audio("game-over", "/audio/titanic-fail.mp3");
+        this.load.audio("fart", "/audio/fart-00.mp3");
 
         this.load.image('tiles', 'atlas.png');
         this.load.tilemapTiledJSON('tilemap', 'level.json');
