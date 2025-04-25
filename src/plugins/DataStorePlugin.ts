@@ -33,7 +33,7 @@ export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
       this.pluginManager.game.scene.stop('Game');
     } else {
       const amtToChange = Math.max(Math.floor(Math.random() * this._day * 2), this._day);
-      const sign = Math.random() < 0.5 ? -1 : 1;
+      const sign = Math.random() < 0.3 ? -1 : 1;
       this._yamsNeeded = Math.max(startingRequiredYams + (amtToChange * sign), this._day * 2);
       this._amountOfYams = Math.max(this._amountOfYams - this._yamsNeeded, 0);
       this.pluginManager.game.events.emit(UPDATE_YAM_COUNT, this._amountOfYams);
