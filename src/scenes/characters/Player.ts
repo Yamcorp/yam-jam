@@ -10,7 +10,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   private _lastDirection: 'front' | 'back' | 'left' | 'right' = 'front';
   private _interactZone!: Phaser.GameObjects.Zone;
 
-  
+  /**
+   * Audio
+   */
+  private _isRunningSoundPlaying: boolean = false;
+
+
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, 'Player')
 
@@ -66,14 +71,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       this._lastDirection = 'right'
       this._interactZone?.setPosition(this.x + 16, this.y + 8);
       moving = true;
-    } 
+    }
     if (this._cursors?.up.isDown || this._wasd?.up.isDown) {
       direction.y -= 1
       animation = 'player-walk-back'
       this._lastDirection = 'back'
       this._interactZone?.setPosition(this.x, this.y - 8);
       moving = true;
-    } 
+    }
     if (this._cursors?.down.isDown || this._wasd?.down.isDown) {
       direction.y += 1
       animation = 'player-walk-front'
@@ -102,13 +107,21 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
           this.setTexture('PlayerWalkSide', 4);
           break;
       }
+      if (this._isRunningSoundPlaying) {
+        this._gameScene.sound.stopByKey("running-00");
+        this._isRunningSoundPlaying = false;
+      }
     } else if (animation) {
       this.anims.play(animation, true)
+      if (!this._isRunningSoundPlaying) {
+        this._gameScene.sound.play("running-00", { volume: 0.2, loop: true });
+        this._isRunningSoundPlaying = true;
+      }
     }
 
     direction.normalize().scale(this._speed)
     this.setVelocity(direction.x, direction.y)
-    // Use collider to constrain the player 
+    // Use collider to constrain the player
     // to the world's bounds
     this.setCollideWorldBounds(true);
   }
@@ -152,7 +165,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   private plantYam() {
     let x = this._interactZone?.x; // get players interact zone location (I think x is the middle)
     let y = this._interactZone?.y; // get players interact zone location
-    
+
     if (!x || !y) return;
 
     // Convert world coordinates units to tile units
@@ -170,7 +183,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       console.log("already a yam here")
       return;
     }
-    
+
 
     // Center plant on tile
     const worldX = tileX * 16 + 8;
@@ -194,7 +207,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   private growAllYams(): void{
     const unripeYams = this.gameScene.growingYams.filter(
       (yam) => yam.growthState === 'seed' || yam.growthState === 'sprout'
-    ) 
+    )
     unripeYams.forEach((yam) => yam.growYam());
   }
 }
