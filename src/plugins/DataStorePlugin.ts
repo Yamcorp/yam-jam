@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import { UIScene } from '../scenes/UIScene';
+
 
 export const UPDATE_YAM_COUNT = 'updateYamCount';
 export const UPDATE_YAM_REQUIRED = 'updateYamRequired';
@@ -47,11 +49,7 @@ export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
     } else {
 
       // You end the day but jr loses a life
-      console.log('this._yamsNeeded: ', this._yamsNeeded)
-      console.log('this._amountOfYams: ', this._amountOfYams)
-
       const newYamCount = this._amountOfYams - this._yamsNeeded;
-      console.log('newYamCount: ', newYamCount)
       this._amountOfYams = newYamCount;
 
       const delta = Math.max(Math.floor(Math.random() * this._day * 2), this._day);
@@ -69,6 +67,11 @@ export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
       // Start house scene
       this.pluginManager.game.scene.start('HouseScene');
     }
+  }
+
+  updateYamUI() {
+    this.game.events.emit(UPDATE_YAM_COUNT, this._amountOfYams);
+    this.pluginManager.game.events.emit(UPDATE_YAM_REQUIRED, this._yamsNeeded);
   }
 
   decreaseYams (amount = 1) {
