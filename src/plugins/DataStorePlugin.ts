@@ -31,7 +31,7 @@ export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
   public get hasEnoughYams() {
     return this._amountOfYams >= this._yamsNeeded
   }
-  
+
   public get amountOfYams () {
     return this._amountOfYams;
   }
@@ -52,8 +52,12 @@ export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
     return this._jrState;
   }
 
-  public dayPassed () {
+  public dayPassed (callback?: () => void) {
     this._day += 1;
+    // this.game
+    // this.pluginManager.get("ClockPlugin").pauseAllEvents();
+    // TODO: this.clockPlugin.pauseAllEvents();
+    if (callback) callback();
     if (this._yamsNeeded > this._amountOfYams) {
 
       // You don't have enough yams, game over
@@ -68,12 +72,12 @@ export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
 
       const delta = Math.max(Math.floor(Math.random() * this._day * 2), this._day);
       const newYamQuota = Math.max(startingRequiredYams + delta, this._day * 2);
-      
+
       this._yamsNeeded = newYamQuota;
 
       this.pluginManager.game.events.emit(UPDATE_YAM_COUNT, this._amountOfYams);
       this.pluginManager.game.events.emit(UPDATE_YAM_REQUIRED, this._yamsNeeded);
-      
+
       // Setup house scene state
       this._isHomeInTime = false;
       this.decreaseJrHealth()

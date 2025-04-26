@@ -12,6 +12,8 @@ export class HouseScene extends BaseScene
     private _initTextObj!: Phaser.GameObjects.Text;
     private _initBubble!: Phaser.GameObjects.Graphics;
 
+    private _morningSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+
     constructor() {
         super('HouseScene');
     }
@@ -19,6 +21,7 @@ export class HouseScene extends BaseScene
     create () {
         this._createMapAndSetCamera()
         this.cameras.main.setBackgroundColor('black');
+        this._morningSound = this.sound.add("morning", { volume: 0.08 });
 
         const center = this.cameras.main.getWorldPoint(
             this.cameras.main.width / 2,
@@ -49,14 +52,14 @@ export class HouseScene extends BaseScene
             this._width = map.widthInPixels
             this._height = map.heightInPixels
         }
-          
+
         const walls = map.addTilesetImage('walls', 'walls');
         const kitchen = map.addTilesetImage('kitchen-items', 'kitchen-items');
         const kitchenFurniture = map.addTilesetImage('kitchen', 'kitchen');
         const bathroom = map.addTilesetImage('bathroom', 'bathroom');
         const farm = map.addTilesetImage('farm', 'tiles');
         if (!walls || !kitchen || !kitchenFurniture || !bathroom || !farm) return
-      
+
         const offsetX = (this.cameras.main.width / this.cameras.main.zoom - this._width) / 2;
         const offsetY = (this.cameras.main.height / this.cameras.main.zoom - this._height) / 2;
 
@@ -98,7 +101,7 @@ export class HouseScene extends BaseScene
         this._initTextObj = this.add.text(center.x, center.y, this._initTextEntries[0], {
           fontFamily: 'Arial Black',
           fontSize: 35,
-          color: 'dark grey',
+          color: 'black',
           stroke: '#000000',
           strokeThickness: 0,
           align: 'center',
@@ -151,42 +154,46 @@ export class HouseScene extends BaseScene
             
     
         } else {
-            // Finished all init text
-            this.input.keyboard?.off('keydown-E', this._cycleInteractions, this);
-            this.input.off('pointerdown', this._cycleInteractions, this);
-    
-            this._initTextObj.destroy();
-            this._initBubble.destroy();
-    
-            this._addJrText();
-    
-            // New input handler for starting the game after Jr's text
-            this.input.keyboard?.once('keydown-E', () => this.scene.start('Game'));
-            this.input.once('pointerdown', () =>
-              this.scene.start('Game'));
+          // Finished all init text
+          this.input.keyboard?.off('keydown-E', this._cycleInteractions, this);
+          this.input.off('pointerdown', this._cycleInteractions, this);
+  
+          this._initTextObj.destroy();
+          this._initBubble.destroy();
+  
+          this._addJrText()
+  
+          // New input handler for starting the game after Jr's text
+          this.input.keyboard?.once('keydown-E', () => {
+            this._morningSound.play();
+            this.scene.start('Game')});
+          this.input.once('pointerdown', () =>{
+            this._morningSound.play();
+            this.scene.start('Game');
+          })
         }
-    }
-    
-
-
+      }
+      
+        
     // ########################
     //  HANDLE JR TEXT SECTION
     // #########################
       private _addJrText() {
+        if (!this || !this.cameras.main) return
         const center = this.cameras.main.getWorldPoint(
             this.cameras.main.width / 2,
             this.cameras.main.height / 2
         );
-    
+
         let jrText: string;
         if (this.dataStore.isHomeInTime) {
             jrText = this._jr.getHealthyDialogue();
         } else {
             jrText = this._jr.getCyborgDialogue();
         }
-    
+
         const maxWidth = (this.cameras.main.width / this.cameras.main.zoom) + 400;
-    
+
         // Create the text object
         this.title = this.add.text(center.x, center.y, jrText, {
             fontFamily: 'Arial Black',
@@ -199,23 +206,23 @@ export class HouseScene extends BaseScene
         });
         this.title.setOrigin(0.5);
         this.title.setScale(0.25);
-    
+
         // Move the text up a bit
         this.title.y -= 40;
-    
+
         // Calculate bubble dimensions
         const padding = 10;
         const bubbleWidth = this.title.width * 0.25 + padding * 2;
         const bubbleHeight = this.title.height * 0.25 + padding * 2;
         const bubbleX = this.title.x - bubbleWidth / 2;
         const bubbleY = this.title.y - bubbleHeight / 2;
-    
+
         // Create the speech bubble graphics
         const bubble = this.add.graphics({ fillStyle: { color: 0x000000, alpha: 0.6 } });
-    
+
         // Rounded rectangle
         bubble.fillRoundedRect(bubbleX, bubbleY, bubbleWidth, bubbleHeight, 10);
-    
+
         // Triangle "tail"
         const triangleWidth = 20;
         const triangleHeight = 10;
@@ -224,7 +231,7 @@ export class HouseScene extends BaseScene
             this.title.x + triangleWidth / 2, bubbleY + bubbleHeight,
             this.title.x, bubbleY + bubbleHeight + triangleHeight
         );
-    
+
         // Group the bubble and text together
         this.add.container(0, 0, [bubble, this.title]);
     }

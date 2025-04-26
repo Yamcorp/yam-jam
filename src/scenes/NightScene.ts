@@ -17,7 +17,7 @@ export class NightScene extends Phaser.Scene {
 
     this.tweens.add({
       targets: nightOverlay,
-      alpha: 0.7,
+      alpha: .95,
       duration: CLOCK_CONSTANTS.NIGHT_LENGTH / 2,
       ease: 'Cubic.easeInOut',
       yoyo: true
