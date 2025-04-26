@@ -73,7 +73,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     // --~~~~~~~~~~~~~~~
 
     startDayNightCycle(): void {
-        // this._morningSound.play();
+        this._morningSound.play();
         this.gameClock.addEvent({
             delay: 3000,
             loop: true,
