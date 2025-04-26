@@ -1,9 +1,12 @@
 import { Scene, GameObjects } from 'phaser';
 
+const TITLE_TEXT = `YAMBORI`;
+const SUBTITLE_TEXT = 'Click to Start';
+
 export class MainMenu extends Scene
 {
     background: GameObjects.Image;
-    logo: GameObjects.Image;
+    logo: GameObjects.Text;
     title: GameObjects.Text;
 
     constructor ()
@@ -15,9 +18,14 @@ export class MainMenu extends Scene
     {
         this.background = this.add.image(512, 384, 'background');
 
-        this.logo = this.add.image(512, 300, 'logo');
+        this.logo = this.add.text(512, 300, TITLE_TEXT, {
+            fontFamily: 'Arial Black', fontSize: 78, color: '#ffffff',
+            align: 'center'
+        }).setOrigin(0.5);
+        this.logo.setShadow(2, 2, '#000000', 0, true, true );
+        // this.logo.setInteractive();
 
-        this.title = this.add.text(512, 460, 'Main Menu', {
+        this.title = this.add.text(512, 460, SUBTITLE_TEXT, {
             fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
