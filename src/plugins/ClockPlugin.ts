@@ -42,7 +42,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
         }
 
         this._morningSound = this._clockSceneSingleton.sound.add("morning", { volume: 0.08 });
-        this._nightSound = this._clockSceneSingleton.sound.add("night", { volume: 0.07 });
+        this._nightSound = this._clockSceneSingleton.sound.add("night", { volume: 0.05 });
 
         if (this._clockSceneSingleton.sys.isActive()) {
         //   console.log("Clock Singleton is active! \n --starting logger--");
@@ -80,8 +80,6 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
             callback: () => {
                 const timeInCycle = this.getTimeInCycle();
                 // logs
-                // console.log(`Time in cycle: ${timeInCycle}`);
-                // console.log(`Elapsed Time: ${this.getElapsedTime()}`);
 
                 // Day to Night
                 if (timeInCycle >= CLOCK_CONSTANTS.DAY_LENGTH && this._isDay) {

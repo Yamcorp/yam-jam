@@ -17,7 +17,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   private _throwSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
   private _harvestSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
   private _plantSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
-  private _isRunSoundPlaying: boolean = false;
 
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
@@ -116,15 +115,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
           this._interactZone?.setPosition(this.x + 16, this.y + 8);
           break;
       }
-      if (this._isRunSoundPlaying) {
+      if (this._runSound.isPlaying) {
         this._runSound.stop();
-        this._isRunSoundPlaying = false;
       }
     } else if (animation) {
       this.anims.play(animation, true)
-      if (!this._isRunSoundPlaying) {
+      if (!this._runSound.isPlaying) {
         this._runSound.play('', { detune: Math.floor(Math.random() * 601) - 300 });
-        this._isRunSoundPlaying = true;
       }
     }
 
