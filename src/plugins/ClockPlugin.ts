@@ -13,7 +13,8 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     private _clockSceneSingleton!: Phaser.Scene;
     private _isDay: boolean = true;
     private _isNight: boolean = false;
-    private _pauseTime!: number;
+    private _currentTime!: number;
+    private _pausedTime!: number;
 
     /**
      * Audio
@@ -83,6 +84,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
                 // logs
                 console.log(`Time in cycle: ${timeInCycle}`);
                 console.log(`Elapsed Time: ${this.getElapsedTime()}`);
+                console.log(`this.gameClock.now: ${this.gameClock.now}`);
 
                 // Day to Night
                 if (timeInCycle >= CLOCK_CONSTANTS.DAY_LENGTH && this._isDay) {
@@ -155,13 +157,13 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
 
     pauseTime(): void {
         console.log("SDFSADFASDFASDFSD:");
-        console.log(this._pauseTime);
-        this._pauseTime = this.gameClock.now;
+        console.log(this._currentTime);
+        this._currentTime = this.gameClock.now;
         this.gameClock.paused = true;
     }
 
     resumeTime(): void {
-        this.gameClock.now = this._pauseTime;
+        this.gameClock.now = this._currentTime;
         this.gameClock.paused = false;
     }
 
