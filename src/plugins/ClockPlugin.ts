@@ -5,7 +5,7 @@ export const CLOCK_CONSTANTS = {
     CYCLE_LENGTH: 48000,
     DAY_LENGTH: 24000,
     NIGHT_LENGTH: 24000,
-    SUNSET_WARNING: 18000
+    SUNSET_WARNING: 10000
 };
 
 export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
