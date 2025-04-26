@@ -8,6 +8,8 @@ const GREEN_COLOR = '#00ff00';
 export class UIScene extends BaseScene {
   private _yamAmount!: Phaser.GameObjects.Text;
   private _yamRequired!: Phaser.GameObjects.Text;
+  private _yamRequiredOriginalX!: number
+  private _shaking = false
 
   constructor() {
     super('UIScene');
@@ -34,6 +36,8 @@ export class UIScene extends BaseScene {
 
     this.game.events.on(UPDATE_YAM_COUNT, this.updateYamCount, this);
     this.game.events.on(UPDATE_YAM_REQUIRED, this.updateYamRequired, this);
+    this._yamRequiredOriginalX = x;
+
   }
 
   public updateYamCount (amount: number) {
@@ -59,13 +63,20 @@ export class UIScene extends BaseScene {
   }
 
   public shakeYamsRequired() {
+    if (this._shaking) return;
+  
+    this._shaking = true;
     this.tweens.add({
       targets: this._yamRequired,
-      x: this._yamRequired.x + 5,
+      x: '+=5',
       duration: 50,
       yoyo: true,
       repeat: 5,
-      ease: 'Sine.easeInOut'
+      ease: 'Sine.easeInOut',
+      onComplete: () => {
+        this._yamRequired.x = this._yamRequiredOriginalX;
+        this._shaking = false;
+      }
     });
   }
 }

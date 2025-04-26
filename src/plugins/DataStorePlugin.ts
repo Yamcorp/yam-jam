@@ -5,7 +5,7 @@ import { UIScene } from '../scenes/UIScene';
 export const UPDATE_YAM_COUNT = 'updateYamCount';
 export const UPDATE_YAM_REQUIRED = 'updateYamRequired';
 
-const startingRequiredYams = 10;
+const startingRequiredYams = 5;
 
 export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
   public _amountOfYams = 0;
