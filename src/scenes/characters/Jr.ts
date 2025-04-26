@@ -38,14 +38,14 @@ export class Jr extends Phaser.Physics.Arcade.Sprite {
       "Dad, what's a baseball?",
       "Dad, do you remember that doll I used to have? What ever happened to it?",
       "Can we pretend to go the beach sometime?",
-      "Television sounds so weird compared to TubeStream",
+      "Television sounds so weird compared to TubeStream.",
       "What's a cake? Oh! Maybe if you're not so busy one of these days, we can make one!",
       "Dad, will you tuck me in?",
       "Dad, will you tell me a story?",
       "What was the rock that you grew up on like?",
       "So you didn't have to eat yams when you were younger...?",
       "...from a book? No way, that's crazy!",
-      "Let's play a game! I know you're tired, but pleassse???.",
+      "Let's play a game! I know you're tired, but pleassse???",
     ]
 
     const randomIndex = Math.floor(Math.random() * dialogueList.length)
