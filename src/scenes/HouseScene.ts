@@ -38,11 +38,6 @@ export class HouseScene extends BaseScene
         this.add.existing(boriSprite);
 
         this._addInitText();
-        // this._addJrText();
-
-        this.input.once('pointerdown', () => {
-            this.scene.start('Game');
-        });
     }
 
     private _createMapAndSetCamera() {
@@ -82,7 +77,7 @@ export class HouseScene extends BaseScene
         if (this.dataStore.isHomeInTime) {
           this._initTextEntries = [
             `Yamco let you keep your house after you paid ${this.dataStore.prevYamsNeeded} yams in rent.`,
-            `Your yam quota for tomorrow's rent is ${this.dataStore.yamsNeeded}.`,
+            `Your yam quota for tomorrow's rent is ${this.dataStore.yamsNeeded} yams.`,
             `You finished the day with enough time to spend the evening with your kid.`,
           ];
         } else {
@@ -167,7 +162,8 @@ export class HouseScene extends BaseScene
     
             // New input handler for starting the game after Jr's text
             this.input.keyboard?.once('keydown-E', () => this.scene.start('Game'));
-            this.input.once('pointerdown', () => this.scene.start('Game'));
+            this.input.once('pointerdown', () =>
+              this.scene.start('Game'));
         }
     }
     
