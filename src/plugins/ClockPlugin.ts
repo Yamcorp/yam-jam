@@ -32,7 +32,6 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     // -----------------------------------------------------
 
     override init(): void {
-        // console.log("ClockPlugin initialized");
         this.game.scene.add("ClockSingleton", new ClockSingleton());
         this._clockSceneSingleton = this.pluginManager.game.scene.getScene("ClockSingleton");
     }
@@ -47,23 +46,20 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
         this._nightSound = this._clockSceneSingleton.sound.add("night", { volume: 0.05 });
 
         if (this._clockSceneSingleton.sys.isActive()) {
-        //   console.log("Clock Singleton is active! \n --starting logger--");
             this.gameClock = this._clockSceneSingleton.time;
             this.startDayNightCycle();
-            // this.startLogger();
         } else {
             console.warn("Clock Singleton not active! \n --waiting for it to emit ready--");
             this._clockSceneSingleton.events.once("ready", () => this.startDayNightCycle());
         }
     }
 
-    // TODO: Not sure about these impl. details...
     override stop(): void {
         this.pluginManager.game.scene.remove("ClockSingleton");
         this.destroy();
     }
 
-    // -----------------------------------------------------s
+    // -----------------------------------------------------
     //#endregion Lifecycle ---------------------------------
 
     // -----------------------------------------------------
@@ -116,7 +112,6 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
                     this._clockSceneSingleton.events.emit("sunsetWarning");
                     console.log("🌅Sunset warning!");
 
-                    // this._clockSceneSingleton.sound.play("sunset", { volume: 0.25 });
                     this._warningSoundPlayed = true;
                 }
             },
@@ -155,28 +150,20 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
         return this.getElapsedTime() % CLOCK_CONSTANTS.CYCLE_LENGTH;
     }
 
-    pauseTime(): void {
+    pauseAllEvents(): void {
         console.log("SDFSADFASDFASDFSD:");
         console.log(this._currentTime);
         this._currentTime = this.gameClock.now;
         this.gameClock.paused = true;
     }
 
-    resumeTime(): void {
+    resumeAllEvents(): void {
         this.gameClock.now = this._currentTime;
         this.gameClock.paused = false;
     }
 
     scheduleOnce(delay: number, callback: () => void) {
         this.gameClock.delayedCall(delay, callback);
-    }
-
-    pauseAllEvents() {
-        this.gameClock.paused = true;
-    }
-
-    resumeAllEvents() {
-        this.gameClock.paused = false;
     }
 
     // -----------------------------------------------------
