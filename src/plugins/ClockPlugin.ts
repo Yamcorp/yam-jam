@@ -2,10 +2,10 @@ import ClockSingleton from "../scenes/Clock";
 import DataStorePlugin from "./DataStorePlugin";
 
 export const CLOCK_CONSTANTS = {
-    CYCLE_LENGTH: 24000,
-    DAY_LENGTH: 12000,
-    NIGHT_LENGTH: 12000,
-    SUNSET_WARNING: 9000
+    CYCLE_LENGTH: 12000,
+    DAY_LENGTH: 6000,
+    NIGHT_LENGTH: 6000,
+    SUNSET_WARNING: 4500
 };
 
 export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
