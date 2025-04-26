@@ -49,7 +49,8 @@ export class Door extends NPC {
         console.log("open door")
         this.gameScene.sound.play("fart", { volume: 0.2 });
         this.gameScene.sound.stopByKey("running");
-      this.gameScene.scene.start('HouseScene');
+        this.gameScene.clockPlugin.pauseAllEvents();
+        this.gameScene.scene.start('HouseScene');
         // this.toggleDoorOpen()
       } else {
         const uiScene = this.gameScene.scene.get('UIScene') as UIScene;
