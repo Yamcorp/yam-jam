@@ -40,7 +40,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.gameScene.input.on('pointerdown', this.throwYam, this);
 
     this._gameScene.input.keyboard?.on('keydown-E', this.interact, this);
-    this._gameScene.input.keyboard?.on('keydown-I', this.growAllYams, this);
+    // this._gameScene.input.keyboard?.on('keydown-I', this.growAllYams, this);
 
 
     this._interactZone = this.scene.add.zone(this.x, this.y + 16, 16, 16);
