@@ -22,7 +22,7 @@ export class Jr extends Phaser.Physics.Arcade.Sprite {
   }
 
   public getHealthyDialogue() {
-    return [
+    const dialogueList = [
       "I love you dad.",
       "I think farming is kinda cool.",
       "I want to make some irl friends... How do I do that?",
@@ -45,7 +45,10 @@ export class Jr extends Phaser.Physics.Arcade.Sprite {
       "So you didn't have to eat yams when you were younger...?",
       "...from a book? No way, that's crazy!",
       "Let's play a game! I know you're tired, but pleassse???.",
-    ].getRandomItem();
+    ]
+
+    const randomIndex = Math.floor(Math.random() * dialogueList.length)
+    return dialogueList[randomIndex]
   }
 
   public getCyborgDialogue() {
