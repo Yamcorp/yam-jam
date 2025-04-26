@@ -23,7 +23,7 @@ export class Jr extends Phaser.Physics.Arcade.Sprite {
   }
 
   public getHealthyDialogue() {
-    const dialogueList = [
+    return [
       "I love you dad.",
       "I think farming is kinda cool.",
       "I want to make some irl friends... How do I do that?",
