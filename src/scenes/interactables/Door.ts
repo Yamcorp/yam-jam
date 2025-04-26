@@ -46,12 +46,11 @@ export class Door extends NPC {
   public interact(): void {
     if (this.playerNear && this.interactZone) {
       if (this.gameScene.dataStore.hasEnoughYams) {
-        console.log("end scene here")
+        console.log("open door")
         this.gameScene.sound.play("fart", { volume: 0.2 });
         this.gameScene.scene.start('HouseScene');
         // this.toggleDoorOpen()
       } else {
-        console.log("hasEnought", this.gameScene.dataStore.hasEnoughYams)
         const uiScene = this.gameScene.scene.get('UIScene') as UIScene;
         uiScene.shakeYamsRequired();
       }

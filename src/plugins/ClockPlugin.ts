@@ -2,9 +2,9 @@ import ClockSingleton from "../scenes/Clock";
 import DataStorePlugin from "./DataStorePlugin";
 
 export const CLOCK_CONSTANTS = {
-    CYCLE_LENGTH: 12000,
-    DAY_LENGTH: 6000,
-    NIGHT_LENGTH: 6000,
+    CYCLE_LENGTH: 48000,
+    DAY_LENGTH: 2400,
+    NIGHT_LENGTH: 24000,
     SUNSET_WARNING: 4500
 };
 
