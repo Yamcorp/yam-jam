@@ -4,13 +4,14 @@ export class Jr extends Phaser.Physics.Arcade.Sprite {
   private _gameScene: Game
 
   constructor(scene: Phaser.Scene, x: number, y: number, state: number) {
-    super(scene, x, y, 'Jr0', state)
+    super(scene, x, y, 'Jr6', state)
 
     this._gameScene = scene as Game
 
     this._gameScene.add.existing(this)
     this._gameScene.physics.add.existing(this)
     this.anims.play(`jr${state}`, true)
+    this.setScale(2/3)
   }
 
   public get gameScene (): Game {
@@ -37,7 +38,7 @@ export class Jr extends Phaser.Physics.Arcade.Sprite {
       "Dad, what's a baseball?",
       "Dad, do you remember that doll I used to have? What ever happened to it?",
       "Can we pretend to go the beach sometime?",
-      "Television sounds so weird compared to TubeStream",
+      "Television sounds so weird compared to TubeStream.",
       "What's a cake? Oh! Maybe if you're not so busy one of these days, we can make one!",
       "Dad, will you tuck me in?",
       "Dad, will you tell me a story?",
@@ -52,7 +53,9 @@ export class Jr extends Phaser.Physics.Arcade.Sprite {
   }
 
   public getCyborgDialogue() {
+    console.log("inside getting dialogue")
     let dialogue;
+    console.log(this.state)
     switch (this.state) {
       case 1: {
         dialogue = "Hey dad, I replaced my arm with this legacy ipod. It's so corny. Want to see?"
@@ -76,8 +79,9 @@ export class Jr extends Phaser.Physics.Arcade.Sprite {
         break;
       }
       default: {
-        console.log(`Jr's value of ${this.state} did not match expected values for cy input`)
-          break;
+        console.log(`Jr's value of ${this.state} did not match expected values for cy input`);
+        dialogue = 'a'
+        break;
       }
     }
     return dialogue;

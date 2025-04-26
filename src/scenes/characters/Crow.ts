@@ -120,7 +120,7 @@ export class Crow extends Phaser.Physics.Arcade.Sprite {
     this._flyingSound.stop();
     this._flyingSound.destroy();
     this._deathSound.play();
-    this.scene.events.emit("removeFromScene", this)
+    if (this.scene) this.scene.events.emit("removeFromScene", this)
     super.destroy();
   }
 

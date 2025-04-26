@@ -5,6 +5,7 @@ import { GameOver } from './scenes/GameOver';
 import { MainMenu } from './scenes/MainMenu';
 import { NightScene } from './scenes/NightScene';
 import { Preloader } from './scenes/Preloader';
+import { HouseScene } from './scenes/HouseScene';
 import DataStorePlugin from './plugins/DataStorePlugin';
 import ClockPlugin from './plugins/ClockPlugin';
 
@@ -43,7 +44,8 @@ const config: Types.Core.GameConfig = {
         MainGame,
         GameOver,
         UIScene,
-        NightScene
+        NightScene,
+        HouseScene
     ]
 };
 
