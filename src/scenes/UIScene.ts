@@ -57,4 +57,15 @@ export class UIScene extends BaseScene {
       this._yamRequired.setColor(WHITE_COLOR);
     }
   }
+
+  public shakeYamsRequired() {
+    this.tweens.add({
+      targets: this._yamRequired,
+      x: this._yamRequired.x + 5,
+      duration: 50,
+      yoyo: true,
+      repeat: 5,
+      ease: 'Sine.easeInOut'
+    });
+  }
 }

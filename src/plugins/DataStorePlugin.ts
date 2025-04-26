@@ -15,6 +15,10 @@ export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
     super(pluginManager);
   }
 
+  public get hasEnoughYams() {
+    return this._amountOfYams >= this._yamsNeeded
+  }
+  
   public get amountOfYams () {
     return this._amountOfYams;
   }
