@@ -11,6 +11,8 @@ export class HouseScene extends BaseScene
     private _jr!: Jr
     public _isHomeInTimeForSupper = true;
 
+    private _morningSound!: Phaser.Sound.NoAudioSound | Phaser.Sound.HTML5AudioSound | Phaser.Sound.WebAudioSound;
+
     constructor() {
         super('HouseScene');
     }
@@ -18,6 +20,7 @@ export class HouseScene extends BaseScene
     create () {
         this._createMapAndSetCamera()
         this.cameras.main.setBackgroundColor('black');
+        this._morningSound = this.sound.add("morning", { volume: 0.08 });
 
         const center = this.cameras.main.getWorldPoint(
             this.cameras.main.width / 2,
@@ -34,6 +37,9 @@ export class HouseScene extends BaseScene
         this.input.once('pointerdown', () => {
             // TODO: resume time
             this.clockPlugin.resumeAllEvents();
+            // this.clockPlugin.restartDay();
+            // TODO: this morningSound should not be played here
+            this._morningSound.play();
             this.scene.start('Game');
         });
     }
