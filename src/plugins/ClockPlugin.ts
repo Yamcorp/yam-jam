@@ -13,6 +13,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     private _clockSceneSingleton!: Phaser.Scene;
     private _isDay: boolean = true;
     private _isNight: boolean = false;
+    private _pauseTime!: number;
 
     /**
      * Audio
@@ -144,10 +145,6 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     // -- Utility -------
     // --~~~~~~~~~~~~~~~
 
-    public getTime(): number {
-        return this.gameClock.now;
-    }
-
     getElapsedTime(): number {
         return Math.floor(this.gameClock.now - this.gameClock.startTime);
     }
@@ -157,10 +154,14 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     }
 
     pauseTime(): void {
+        console.log("SDFSADFASDFASDFSD:");
+        console.log(this._pauseTime);
+        this._pauseTime = this.gameClock.now;
         this.gameClock.paused = true;
     }
 
     resumeTime(): void {
+        this.gameClock.now = this._pauseTime;
         this.gameClock.paused = false;
     }
 
