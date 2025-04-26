@@ -3,6 +3,7 @@ import { Game as MainGame } from './scenes/Game';
 import { UIScene } from './scenes/UIScene'
 import { GameOver } from './scenes/GameOver';
 import { MainMenu } from './scenes/MainMenu';
+import { StoryScene } from './scenes/StoryScene';
 import { NightScene } from './scenes/NightScene';
 import { Preloader } from './scenes/Preloader';
 import { HouseScene } from './scenes/HouseScene';
@@ -41,6 +42,7 @@ const config: Types.Core.GameConfig = {
         Boot,
         Preloader,
         MainMenu,
+        StoryScene,
         MainGame,
         GameOver,
         UIScene,
