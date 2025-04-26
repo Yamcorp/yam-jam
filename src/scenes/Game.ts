@@ -4,7 +4,6 @@ import { Crow } from './characters/Crow';
 import { GrownYam, YamTile } from './interactables/GrownYam';
 import { ThrownYam } from './interactables/ThrownYam';
 import { Door } from './interactables/Door'
-import { Jr } from './characters/Jr';
 export class Game extends BaseScene
 {
   public growingYams: GrownYam[] = [];
@@ -80,6 +79,8 @@ export class Game extends BaseScene
     this.Crows.forEach((crow) => crow.update());
     this.growingYams.forEach((yam) => yam.update());
     this.door.update()
+
+    this.dataStore.updateYamUI()
   }
 
   private _listenForEvents () {

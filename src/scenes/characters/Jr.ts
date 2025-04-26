@@ -80,7 +80,7 @@ export class Jr extends Phaser.Physics.Arcade.Sprite {
       }
       default: {
         console.log(`Jr's value of ${this.state} did not match expected values for cy input`);
-        dialogue = 'a'
+        dialogue = ''
         break;
       }
     }
