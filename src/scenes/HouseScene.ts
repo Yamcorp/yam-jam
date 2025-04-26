@@ -33,7 +33,7 @@ export class HouseScene extends BaseScene
 
         this.input.once('pointerdown', () => {
             // TODO: resume time
-            this.clockPlugin.resumeTime();
+            this.clockPlugin.resumeAllEvents();
             this.scene.start('Game');
         });
     }
