@@ -8,7 +8,7 @@ export const UPDATE_YAM_REQUIRED = 'updateYamRequired';
 const startingRequiredYams = 5;
 
 export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
-  public _amountOfYams = 0;
+  public _amountOfYams = 1000;
   private _yamsNeeded = startingRequiredYams;
   private _day = 1;
   private _jrState = 5;
