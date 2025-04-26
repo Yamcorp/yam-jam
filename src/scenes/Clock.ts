@@ -23,7 +23,7 @@ export default class ClockSingleton extends Phaser.Scene {
      * create
      */
     create() {
-        console.log("⏰ClockSingleton created & event ready emitted");
+        // console.log("⏰ClockSingleton created & event ready emitted");
         this.events.emit("ready");
     }
     //#endregion

@@ -2,10 +2,10 @@ import ClockSingleton from "../scenes/Clock";
 import DataStorePlugin from "./DataStorePlugin";
 
 export const CLOCK_CONSTANTS = {
-    CYCLE_LENGTH: 24000,
-    DAY_LENGTH: 12000,
-    NIGHT_LENGTH: 12000,
-    SUNSET_WARNING: 9000
+    CYCLE_LENGTH: 48000,
+    DAY_LENGTH: 2400,
+    NIGHT_LENGTH: 24000,
+    SUNSET_WARNING: 4500
 };
 
 export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
@@ -30,7 +30,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
     // -----------------------------------------------------
 
     override init(): void {
-        console.log("ClockPlugin initialized");
+        // console.log("ClockPlugin initialized");
         this.game.scene.add("ClockSingleton", new ClockSingleton());
         this._clockSceneSingleton = this.pluginManager.game.scene.getScene("ClockSingleton");
     }
@@ -45,7 +45,7 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
         this._nightSound = this._clockSceneSingleton.sound.add("night", { volume: 0.07 });
 
         if (this._clockSceneSingleton.sys.isActive()) {
-          console.log("Clock Singleton is active! \n --starting logger--");
+        //   console.log("Clock Singleton is active! \n --starting logger--");
             this.gameClock = this._clockSceneSingleton.time;
             this.startDayNightCycle();
             // this.startLogger();
@@ -80,8 +80,8 @@ export default class ClockPlugin extends Phaser.Plugins.BasePlugin {
             callback: () => {
                 const timeInCycle = this.getTimeInCycle();
                 // logs
-                console.log(`Time in cycle: ${timeInCycle}`);
-                console.log(`Elapsed Time: ${this.getElapsedTime()}`);
+                // console.log(`Time in cycle: ${timeInCycle}`);
+                // console.log(`Elapsed Time: ${this.getElapsedTime()}`);
 
                 // Day to Night
                 if (timeInCycle >= CLOCK_CONSTANTS.DAY_LENGTH && this._isDay) {

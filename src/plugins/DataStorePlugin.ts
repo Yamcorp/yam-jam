@@ -1,20 +1,27 @@
 import Phaser from 'phaser';
+import { UIScene } from '../scenes/UIScene';
+
 
 export const UPDATE_YAM_COUNT = 'updateYamCount';
 export const UPDATE_YAM_REQUIRED = 'updateYamRequired';
 
-const startingRequiredYams = 10;
+const startingRequiredYams = 5;
 
 export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
-  public _amountOfYams = 10;
+  public _amountOfYams = 0;
   private _yamsNeeded = startingRequiredYams;
   private _day = 1;
   private _jrState = 5;
+  private _isHomeInTimeForDinner = false;
 
   constructor(pluginManager: Phaser.Plugins.PluginManager) {
     super(pluginManager);
   }
 
+  public get hasEnoughYams() {
+    return this._amountOfYams >= this._yamsNeeded
+  }
+  
   public get amountOfYams () {
     return this._amountOfYams;
   }
@@ -34,18 +41,37 @@ export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
   public dayPassed () {
     this._day += 1;
     if (this._yamsNeeded > this._amountOfYams) {
-      // TODO: Game Over Logic, game over sound
-      // this.game.sound.play('game-over', { volume: 0.2 });
-      // this.pluginManager.game.scene.start('GameOver');
-      // this.pluginManager.game.scene.stop('Game');
+
+      // You dont have enough yams, game over
+      this.game.sound.play('game-over', { volume: 0.2 });
+      this.pluginManager.game.scene.start('GameOver');
+      this.pluginManager.game.scene.stop('Game');
     } else {
-      const amtToChange = Math.max(Math.floor(Math.random() * this._day * 2), this._day);
-      const sign = Math.random() < 0.3 ? -1 : 1;
-      this._yamsNeeded = Math.max(startingRequiredYams + (amtToChange * sign), this._day * 2);
-      this._amountOfYams = Math.max(this._amountOfYams - this._yamsNeeded, 0);
+
+      // You end the day but jr loses a life
+      const newYamCount = this._amountOfYams - this._yamsNeeded;
+      this._amountOfYams = newYamCount;
+
+      const delta = Math.max(Math.floor(Math.random() * this._day * 2), this._day);
+      const newYamQuota = Math.max(startingRequiredYams + delta, this._day * 2);
+      
+      this._yamsNeeded = newYamQuota;
+
       this.pluginManager.game.events.emit(UPDATE_YAM_COUNT, this._amountOfYams);
       this.pluginManager.game.events.emit(UPDATE_YAM_REQUIRED, this._yamsNeeded);
+      
+      // Setup house scene state
+      this._isHomeInTimeForDinner = false;
+      this.decreaseJrHealth()
+
+      // Start house scene
+      this.pluginManager.game.scene.start('HouseScene');
     }
+  }
+
+  updateYamUI() {
+    this.game.events.emit(UPDATE_YAM_COUNT, this._amountOfYams);
+    this.pluginManager.game.events.emit(UPDATE_YAM_REQUIRED, this._yamsNeeded);
   }
 
   decreaseYams (amount = 1) {
@@ -60,5 +86,11 @@ export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
 
   decreaseJrHealth () {
     this._jrState -= 1;
+  }
+
+  getNextYamRequirement(): number {
+    const amtToChange = Math.max(Math.floor(Math.random() * this._day * 2), this._day);
+    const delta = amtToChange;
+    return Math.max(startingRequiredYams + delta, this._day * 2);
   }
 }

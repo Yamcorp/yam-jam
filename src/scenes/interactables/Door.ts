@@ -1,5 +1,7 @@
 import { NPC } from '../abstracts/NPC';
 import { Game } from '../Game';
+import { UIScene } from '../UIScene';
+
 
 export class Door extends NPC {
   public transitionZone: Phaser.GameObjects.Zone | undefined;
@@ -43,10 +45,16 @@ export class Door extends NPC {
 
   public interact(): void {
     if (this.playerNear && this.interactZone) {
-      console.log("end scene here")
-      this.gameScene.sound.play("fart", { volume: 0.2 });
-      this.gameScene.scene.start('HouseScene');
-      // this.toggleDoorOpen()
+      if (this.gameScene.dataStore.hasEnoughYams) {
+        console.log("open door")
+        this.gameScene.sound.play("fart", { volume: 0.2 });
+        this.gameScene.scene.start('HouseScene');
+        // this.toggleDoorOpen()
+      } else {
+        const uiScene = this.gameScene.scene.get('UIScene') as UIScene;
+        uiScene.shakeYamsRequired();
+      }
+
     }
   }
 
