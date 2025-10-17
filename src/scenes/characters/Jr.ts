@@ -4,7 +4,7 @@ export class Jr extends Phaser.Physics.Arcade.Sprite {
   private _gameScene: Game
 
   constructor(scene: Phaser.Scene, x: number, y: number, state: number) {
-    super(scene, x, y, 'Jr6', state)
+    super(scene, x, y, 'Jr3', state)
 
     this._gameScene = scene as Game
 
@@ -53,9 +53,9 @@ export class Jr extends Phaser.Physics.Arcade.Sprite {
   }
 
   public getCyborgDialogue() {
-    console.log("inside getting dialogue")
+    // console.log("inside getting dialogue")
     let dialogue;
-    console.log(this.state)
+    // console.log(this.state)
     switch (this.state) {
       case 1: {
         dialogue = "Hey dad, I replaced my arm with this legacy ipod. It's so corny. Want to see?"

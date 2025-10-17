@@ -10,6 +10,8 @@ export class UIScene extends BaseScene {
   private _yamRequired!: Phaser.GameObjects.Text;
   private _yamRequiredOriginalX!: number
   private _shaking = false
+  private _dayCount: number = 1;
+  private _timeCount: string = '1:00'
 
   constructor() {
     super('UIScene');
@@ -37,8 +39,22 @@ export class UIScene extends BaseScene {
     this.game.events.on(UPDATE_YAM_COUNT, this.updateYamCount, this);
     this.game.events.on(UPDATE_YAM_REQUIRED, this.updateYamRequired, this);
     this._yamRequiredOriginalX = x;
-
   }
+
+  public updateTime () {
+    // format millis
+    const totalSeconds = Math.round(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return minutes > 0 
+      ? `${minutes}m ${seconds}s`
+      : `${seconds}s`;
+  }
+
+  public updateDay () {
+    this._dayCount = this.dataStore.day
+  }
+  
 
   public updateYamCount (amount: number) {
     this._yamAmount.setText(`Yams Remaining: ${amount}`);

@@ -55,8 +55,11 @@ export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
   public dayPassed (callback?: () => void) {
     this._day += 1;
     // this.game
-    // this.pluginManager.get("ClockPlugin").pauseAllEvents();
-    // TODO: this.clockPlugin.pauseAllEvents();
+    console.log(this.pluginManager)
+    const clockPlugin = this.pluginManager.get("ClockPlugin")
+    if (clockPlugin) clockPlugin.pauseAllEvents();
+
+    // this.pluginManager.plugins.find("clockPlugin").pauseAllEvents();
     if (callback) callback();
     if (this._yamsNeeded > this._amountOfYams) {
 
@@ -77,10 +80,6 @@ export default class DataStorePlugin extends Phaser.Plugins.BasePlugin {
 
       this.pluginManager.game.events.emit(UPDATE_YAM_COUNT, this._amountOfYams);
       this.pluginManager.game.events.emit(UPDATE_YAM_REQUIRED, this._yamsNeeded);
-
-      // Setup house scene state
-      this._isHomeInTime = false;
-      this.decreaseJrHealth()
 
       // Start house scene
       this.pluginManager.game.scene.start('HouseScene');
